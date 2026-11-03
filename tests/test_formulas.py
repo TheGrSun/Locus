@@ -1,7 +1,7 @@
 import pytest
 import sympy as sp
 
-from desmos_mcp.formulas import X, parse_formula, validate_range
+from desmos_mcp.formulas import T, X, Y, parse_component, parse_formula, parse_surface, validate_range
 from desmos_mcp.worker import analyze
 
 
@@ -10,7 +10,8 @@ from desmos_mcp.worker import analyze
     [
         ("y = x^2", 4),
         ("2*x+1", 5),
-        ("sin(pi/2)", 1),
+        (r"\sin(\pi/2)", 1),
+        (r"y = x^{2}", 4),
         ("sqrt(x)", sp.sqrt(2)),
         ("abs(-x)", 2),
         ("log(e)", 1),
@@ -63,6 +64,22 @@ def test_real_analysis_and_corner():
     smooth = analyze("abs(x^2)", "critical_points")
     assert smooth["nondifferentiable_candidates"] == "EmptySet"
     assert smooth["stationary_points"] == "{0}"
+
+
+def test_piecewise_and_parametric_component():
+    piece = parse_formula("x^2 if x < 0 else x")
+    assert sp.simplify(piece.subs(X, -2) - 4) == 0
+    assert sp.simplify(piece.subs(X, 3) - 3) == 0
+    assert sp.simplify(parse_component("cos(t)").subs(T, 0) - 1) == 0
+
+
+def test_surface_uses_x_and_y_only():
+    assert sp.simplify(parse_surface("z = x^2 + y^2").subs({X: 2, Y: 3}) - 13) == 0
+    assert sp.simplify(parse_surface("sin(x)*cos(y)").subs({X: 0, Y: 0}) - 0) == 0
+    with pytest.raises(ValueError):
+        parse_surface("2x")
+    with pytest.raises(ValueError):
+        parse_formula("z = x + y")
 
 
 def test_domain_is_not_cancelled_away():

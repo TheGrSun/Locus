@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graph</title>
+  <style>
+    :root { color: #24312c; background: #f4f6f3; font-family: "Source Sans 3", "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body { display: grid; grid-template-columns: 332px minmax(0, 1fr); }
+    aside { display: flex; flex-direction: column; background: #fff; border-right: 1px solid #e4ebe6; min-height: 0; box-shadow: 8px 0 24px rgba(28, 48, 40, .04); }
+    header { padding: 16px 16px 4px; }
+    .titlebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    header strong { font-size: 12px; letter-spacing: .14em; color: #2f6f5b; }
+    .menu { position: relative; }
+    .menu > button { border: 0; background: transparent; color: #31443c; font: inherit; font-size: 13px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 200ms ease, color 200ms ease; }
+    .menu > button:hover { background: #f3f7f5; }
+    .menu > button:active, .menu > button.pressed { background: #d5ebe3; color: #143f32; }
+    .menu > button::after { content: "▾"; margin-left: 5px; color: #8aa099; font-size: 10px; }
+    #mode-wrap { display: block; margin: 10px 0 4px; }
+    #language-button, #mode-button { border: 1px solid #e5eeea; background: #fff; color: #3d4f48; border-radius: 999px; padding: 6px 12px; font-size: 12px; letter-spacing: .01em; box-shadow: 0 1px 2px rgba(28, 48, 40, .04); }
+    #language-button:hover, #mode-button:hover { background: #f3f7f5; }
+    #language-button.on, #mode-button.on { background: #e5f2ec; color: #1c5c45; }
+    #language-button:active, #mode-button:active, #language-button.pressed, #mode-button.pressed { background: #d5ebe3; color: #143f32; animation: settle 420ms cubic-bezier(.2, .8, .2, 1); }
+    #language-wrap .menu, #language-wrap { margin-left: auto; }
+    .menu ul { position: absolute; z-index: 8; top: calc(100% + 8px); min-width: 168px; margin: 0; padding: 6px; list-style: none; background: #fff; border: 1px solid #e4ebe6; border-radius: 12px; box-shadow: 0 12px 28px rgba(28, 48, 40, .12); }
+    #language-menu { right: 0; left: auto; transform-origin: top right; }
+    #mode-menu { left: 0; }
+    .menu ul { transform-origin: top left; }
+    .menu ul:not([hidden]) { animation: menu-in 180ms cubic-bezier(.2, .8, .2, 1); }
+    .menu ul button { width: 100%; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font: inherit; cursor: pointer; transition: background 160ms ease; }
+    .menu ul button:hover { background: #f3f7f5; }
+    .menu ul button[aria-selected="true"] { background: #e7f3ee; color: #1c5c45; }
+    .menu ul button:active, .menu ul button.pressed { background: #dcebe4; }
+    @keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+    #rows { overflow: auto; }
+    .hidden { display: none !important; }
+    .row { display: grid; grid-template-columns: 22px 8px 1fr 22px; gap: 8px; align-items: center; padding: 8px 12px; border-top: 1px solid #eef3f0; }
+    .row .remove { border: 0; background: transparent; color: #8aa099; cursor: pointer; font-size: 16px; width: 22px; height: 22px; border-radius: 6px; transition: background 180ms ease, color 180ms ease; }
+    .row .remove:hover { color: #24312c; background: #f3f6f4; }
+    .row .remove:active, .row .remove.pressed { background: #e7eeea; color: #1c3b32; }
+    .row span { color: #8aa099; }
+    .swatch { width: 8px; height: 22px; border-radius: 4px; opacity: .75; }
+    .row input { border: 0; font: italic 18px "Times New Roman", serif; width: 100%; padding: 6px 4px; background: transparent; }
+    .row input:focus { outline: none; background: #f3faf7; border-radius: 8px; }
+    #add, .window button { font: inherit; border: 0; background: transparent; color: #1f6b52; cursor: pointer; }
+    #add { text-align: left; margin: 2px 8px; padding: 6px 8px; font-size: 20px; line-height: 1; border-radius: 8px; transition: background 180ms ease; }
+    #add:hover { background: #f3faf7; }
+    #add:active, #add.pressed { background: #e3f2eb; }
+    .window { margin-top: auto; padding: 10px 12px 12px; border-top: 1px solid #eef3f0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .window label { display: flex; align-items: center; gap: 4px; color: #607068; font-size: 12px; }
+    .window input { width: 58px; padding: 4px 6px; border: 1px solid #e1eae5; border-radius: 8px; background: #fbfcfb; transition: border-color 180ms ease, box-shadow 180ms ease; }
+    .window input:focus { outline: none; border-color: #9ec9b8; box-shadow: 0 0 0 3px rgba(31, 107, 82, .12); }
+    #extra { padding: 0 12px 8px; display: grid; gap: 6px; }
+    #extra input, #extra textarea, #extra select { width: 100%; font: italic 16px "Times New Roman", serif; border: 1px solid #e5eeea; border-radius: 10px; padding: 7px 8px; background: #fff; }
+    #error { color: #9d3a36; min-height: 20px; padding: 0 14px 8px; font-size: 13px; }
+    #stage { position: relative; display: flex; flex-direction: column; background: #fbfcfb; min-width: 0; min-height: 0; }
+    #viewport { position: relative; flex: 1; min-height: 0; }
+    #viewport canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+    #hint, #hud { position: absolute; left: 16px; color: #7d8b84; font-size: 12px; pointer-events: none; z-index: 1; }
+    #hint { bottom: 14px; }
+    #hud { top: 14px; max-width: 70%; color: #31443c; }
+    #graph-tools { position: relative; flex: none; display: flex; justify-content: flex-end; z-index: 2; padding: 12px 16px 2px; }
+    #graph-tools .cluster { display: flex; gap: 2px; align-items: center; padding: 3px; background: rgba(255,255,255,.9); border: 1px solid #e5eeea; border-radius: 999px; box-shadow: 0 1px 2px rgba(28, 48, 40, .04); }
+    #graph-tools button.tool { border: 0; background: transparent; color: #3d4f48; border-radius: 999px; padding: 6px 12px; font-size: 12px; letter-spacing: .01em; transition: background 200ms ease, color 200ms ease; }
+    #graph-tools button.tool:hover { background: #f3f7f5; }
+    #graph-tools button.tool.on { background: #e5f2ec; color: #1c5c45; }
+    #graph-tools button.tool:active, #graph-tools button.tool.pressed { background: #d5ebe3; color: #143f32; }
+    #graph-tools button.tool.pressed { animation: settle 420ms cubic-bezier(.2, .8, .2, 1); }
+    @keyframes settle {
+      from { box-shadow: 0 0 0 0 rgba(31, 107, 82, .2); }
+      to { box-shadow: 0 0 0 7px rgba(31, 107, 82, 0); }
+    }
+    .hidden { display: none !important; }
+    #viewport #plane { z-index: 1; }
+    @media (max-width: 720px) { body { grid-template-columns: 1fr; grid-template-rows: auto minmax(420px, 1fr); } }
+  </style>
+</head>
+<body>
+  <aside>
+    <header>
+      <div class="titlebar">
+        <strong id="brand">GRAPH</strong>
+        <div class="menu" id="language-wrap">
+          <button type="button" id="language-button" aria-haspopup="listbox" aria-expanded="false">English</button>
+          <ul id="language-menu" role="listbox" hidden></ul>
+        </div>
+      </div>
+      <div class="menu" id="mode-wrap">
+        <button type="button" id="mode-button" aria-haspopup="listbox" aria-expanded="false">3D surface</button>
+        <ul id="mode-menu" role="listbox" hidden></ul>
+        <select id="mode" hidden>
+          <option value="surfaces">3D surface</option>
+          <option value="curves">2D curve</option>
+        </select>
+      </div>
+    </header>
+    <div id="rows"></div>
+    <button id="add" type="button">+</button>
+    <div id="extra"></div>
+    <p id="error"></p>
+    <div class="window">
+      <label>x <input id="x0" type="number" value="-5"><input id="x1" type="number" value="5"></label>
+      <label>y <input id="y0" type="number" value="-5"><input id="y1" type="number" value="5"></label>
+      <label id="z-range">z <input id="z0" type="number" value="-5"><input id="z1" type="number" value="5"></label>
+      <label id="derivative-wrap"><input id="derivative" type="checkbox"> <span id="derivative-label">Plot derivative</span></label>
+    </div>
+  </aside>
+  <section id="stage">
+    <div id="graph-tools">
+      <div class="cluster">
+        <button type="button" class="tool on" id="orient-default">Default view</button>
+        <button type="button" class="tool" id="orient-xy">XY view</button>
+        <button type="button" class="tool" id="zoom-in">Zoom in</button>
+        <button type="button" class="tool" id="zoom-out">Zoom out</button>
+      </div>
+    </div>
+    <div id="viewport">
+      <canvas id="plane"></canvas>
+      <div id="hint">Drag to orbit, scroll to zoom, right-click to pan</div>
+    </div>
+  </section>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      },
+      "integrity": {
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js": "sha384-61S/Nu32S3E5+n+KpCOTb2eRYps6fVKm+9Gz1QBvSePFthb46f063Aa/qe/lykFZ",
+        "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js": "sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP"
+      }
+    }
+  </script>
+  <script type="module" src="/app.js?v=21"></script>
+</body>
+</html>

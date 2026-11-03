@@ -49,6 +49,81 @@ Open `path` in a browser, supply your key, then move the `a` slider or edit expr
 “Save state JSON” downloads Desmos's opaque state; “Import state” reloads it. “Reset” restores the original graph.
 “Export PNG” saves the current view. The original HTML is unchanged by browser edits.
 
+## Several curves and their analysis
+
+`explore_functions` returns one PNG and one analysis object per formula:
+
+```json
+{"formulas":["sin(x)","cos(x)"],"x_range":[-6.283185307,6.283185307],"y_range":[-1.5,1.5],"analysis_type":"detailed"}
+```
+
+`plot_multiple_functions` draws up to 12 curves when the analysis is not needed.
+
+## Several surfaces
+
+`plot_3d_surface` accepts `formulas` so the surfaces share one view:
+
+```json
+{"formulas":["z = x^2 + y^2","z = 0"],"x_range":[-2,2],"y_range":[-2,2],"z_range":[0,8]}
+```
+
+A single `formula` argument still works. Pass `z_range` when the picture should use a fixed vertical scale. To orbit or zoom, open the live demo or `create_interactive_graph` with `dimension` `3d`.
+
+## Points, parametric curves, vectors, and tangents
+
+`plot_points` draws data. Add `formula` to overlay `y=f(x)` or, for `[x, y, z]` points, `z=f(x,y)`.
+
+```json
+{"points":[[0,0],[1,1],[2,4]],"formula":"x^2","x_range":[-1,3]}
+```
+
+`plot_parametric` uses `t`. Include `z` for a space curve.
+
+```json
+{"x":"cos(t)","y":"sin(t)","z":"t","t_range":[0,6.283185307]}
+```
+
+`plot_vector_field` draws direction arrows. Components use `x` and `y`.
+
+```json
+{"fx":"-y","fy":"x","x_range":[-2,2],"y_range":[-2,2],"density":12}
+```
+
+Piecewise formulas use Python conditions, including inside the tools above: `x^2 if x < 0 else x`.
+`plot_math_function` accepts `show_derivative: true` and `tangent_at: 1` to draw those lines on the same axes.
+
+## Offline surface
+
+`plot_3d_surface`:
+
+```json
+{"formula":"z = sin(x)*cos(y)","x_range":[-6.283185307,6.283185307],"y_range":[-6.283185307,6.283185307],"z_range":[-1.2,1.2]}
+```
+
+The PNG is a sampled surface. It is not a symbolic 3D analysis. Keep explicit `*`.
+
+## Interactive 3D
+
+`create_interactive_graph` with `"dimension":"3d"`:
+
+```json
+{"expressions":["a=1","z=a(x^2+y^2)"],"title":"Paraboloid","language":"zh-CN","dimension":"3d"}
+```
+
+The page constructs `Desmos.Calculator3D` and links the official v1.12 demos. Drag to orbit. The official 3D demo starts blank; this page loads the expressions after the user connects with their own key.
+
+## Official demos
+
+Verified on 2026-11-02:
+
+| Page | Result |
+| --- | --- |
+| https://www.desmos.com/api/v1.12/docs/examples/parabola.html | HTTP 200. `GraphingCalculator` and `y=x^2`. |
+| https://www.desmos.com/api/v1.12/docs/examples/3d.html | HTTP 200. Blank `Calculator3D`. |
+| https://www.desmos.com/api/v1.11/docs/examples/3d.html | HTTP 404. Do not link it. |
+
+v1.12 is the current stable production API. v1.13 is not stable until Spring 2027.
+
 ## Guided prompts
 
 `basic_graphing_assistant` arguments: `{"formula":"sin(x)"}`.

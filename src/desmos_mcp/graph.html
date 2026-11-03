@@ -12,24 +12,39 @@
     h2{margin:0 0 12px;font-size:20px}label{display:block;margin:20px 0 8px;font-weight:600}
     input[type=password]{width:100%;padding:12px;border:1px solid #9aafa4;border-radius:8px;font:inherit}
     button,.link{font:inherit;cursor:pointer;border:1px solid #b3c6ba;background:white;color:#234f40;padding:10px 16px;border-radius:8px}
-    button.primary{background:#225c45;color:white;border-color:#225c45;margin-top:12px}button:disabled{cursor:default;opacity:.5}
+    a.primary{display:inline-block;background:#225c45;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px}
+    button:disabled{cursor:default;opacity:.5}
     button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ca9122;outline-offset:3px}a{color:#21694b}
     .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.status{min-height:28px;margin:10px 0;color:#285641}
     .error{color:#a52927}.graph{height:70vh;min-height:420px;border:1px solid #c4d4c9;border-radius:12px;overflow:hidden;background:white}
     pre{padding:16px;background:#f2f6f3;border-radius:8px;overflow:auto;white-space:pre-wrap}.hint{font-size:14px}
+    .demos{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}.mode{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:999px;background:#e5f2eb;color:#1d5a42;font-size:12px;font-weight:700;letter-spacing:.04em}
     [hidden]{display:none!important}footer{margin:18px 0;color:#65776c;font-size:13px}
     @media(max-width:600px){header,main{padding:16px}.setup{padding:20px}.graph{height:72vh}h1{font-size:22px}}
   </style>
 </head>
 <body>
   <noscript>Please enable JavaScript to use this graph. 请启用 JavaScript 使用交互图表。</noscript>
-  <header><span class="brand">DESMOS MCP / GRAPH LAB</span><h1 id="title"></h1><p id="intro"></p></header>
+  <header>
+    <span class="brand">DESMOS MCP / GRAPH LAB</span>
+    <h1 id="title"></h1>
+    <p id="mode" class="mode"></p>
+    <p id="intro"></p>
+    <p class="hint demos" id="demos">
+      <a id="demo-2d" href="__DEMO_2D__" target="_blank" rel="noopener noreferrer"></a>
+      <a id="demo-3d" href="__DEMO_3D__" target="_blank" rel="noopener noreferrer"></a>
+      <a id="docs-2d" href="__DOCS_2D__" target="_blank" rel="noopener noreferrer"></a>
+      <a id="docs-3d" href="__DOCS_3D__" target="_blank" rel="noopener noreferrer"></a>
+    </p>
+  </header>
   <main>
     <section id="setup" class="setup" aria-labelledby="setup-title">
-      <h2 id="setup-title"></h2><p id="setup-help"></p>
+      <h2 id="setup-title"></h2>
+      <p><a id="open-demo" class="primary" target="_blank" rel="noopener noreferrer"></a></p>
+      <p id="setup-help"></p>
+      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off">
+        <button id="load" type="submit"></button></form>
       <a id="get-key" href="https://www.desmos.com/my-api" target="_blank" rel="noopener noreferrer"></a>
-      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off" required>
-        <button id="load" class="primary" type="submit"></button></form>
       <p class="hint" id="privacy"></p><h2 id="expressions-title"></h2><pre id="expressions"></pre>
     </section>
     <p id="status" class="status" role="status" aria-live="polite"></p>
@@ -43,23 +58,36 @@
   <script>
     "use strict";
     const graph = __GRAPH_DATA__;
+    window.__DESMOS_MCP_GRAPH = graph;
+    const apiVersion = graph.apiVersion || "__API_VERSION__";
+    const is3d = graph.dimension === "3d";
     const messages = graph.language === "zh-CN" ? {
-      intro:"编辑公式，拖动参数滑块，探索图像如何变化。",
-      setup:"连接 Desmos 交互计算器", help:"此页面通过官方 JavaScript SDK 加载计算器。需要联网及你自己的 Desmos API key；PNG 绘图工具可离线使用。",
-      getKey:"前往 Desmos 申请 API key ↗", key:"Desmos API key", load:"加载交互图表", loading:"正在连接 Desmos…",
+      intro:"三维结果是一张 x、y、z 坐标轴的标准视图。官方示例用的是 Desmos 自己的 API，不需要你的 key。",
+      intro3d:"三维结果是一张 x、y、z 坐标轴的标准视图。上方官方 3D 示例可以直接打开，不需要你的 key。",
+      setup:"可选：用自己的 key 把公式载入本页", help:"没有 key 时，打开上方官方示例即可使用 Desmos API v1.12。本页的输入框只在你想把下面的公式载入自己的页面时才需要。",
+      getKey:"前往 Desmos 申请 API key ↗", key:"可选：自己的 API key", load:"载入本页", loading:"正在连接 Desmos…",
+      open2d:"打开官方 2D 示例（不需要 key）", open3d:"打开官方 3D 示例（不需要 key）",
       privacy:"Key 仅在本页内存中使用，并发送给 Desmos 加载 SDK；不会写入导出的状态文件。浏览器扩展仍可能读取本页内容。",
-      expressions:"初始公式（Desmos LaTeX）", reset:"恢复初始图表", save:"保存状态 JSON", restore:"导入状态", png:"导出 PNG",
+      expressions:"初始公式（Desmos LaTeX）", expressions3d:"初始公式（Desmos 3D LaTeX）",
+      reset:"恢复初始图表", save:"保存状态 JSON", restore:"导入状态", png:"导出 PNG",
       howto:"在左侧编辑公式；滚轮缩放、拖动平移；点击曲线查看坐标。输入 a=1，再输入 y=ax^2，可用滑块探索参数。刷新前请保存状态。",
+      howto3d:"拖动空白处旋转，滚轮缩放。公式示例：a=1 与 z=a(x^2+y^2)。官方 3D 示例是空白的 Calculator3D；本页会在连接后载入你的公式。刷新前请保存状态。",
+      demo2d:"官方 2D 示例", demo3d:"官方 3D 示例", docs2d:"2D 文档", docs3d:"3D 文档",
       ready:"图表已就绪。", failed:"无法加载 Desmos。请检查网络、API key 或浏览器控制台，然后重试。",
       invalid:"导入失败：请选择 Desmos 导出的有效状态 JSON（不超过 2 MB）。", restored:"已导入状态。", saved:"已下载状态文件。", actionFailed:"操作失败，请重试或检查浏览器控制台。",
       footer:"Desmos MCP · 独立开源项目，非 Desmos 官方产品。网页修改不会自动同步回 MCP 会话。"
     } : {
-      intro:"Edit expressions, move parameter sliders, and explore how your graph changes.",
-      setup:"Connect the Desmos calculator", help:"This page uses the official JavaScript SDK. Internet access and your own Desmos API key are required. The PNG plotting tools work offline.",
-      getKey:"Get a Desmos API key ↗", key:"Desmos API key", load:"Load interactive graph", loading:"Connecting to Desmos…",
+      intro:"A 3D result is one view of the x, y, and z axes. The official demo uses Desmos's own API and does not need your key.",
+      intro3d:"A 3D result is one view of the x, y, and z axes. The official 3D demo above opens without your key.",
+      setup:"Optional: load these expressions with your own key", help:"Without a key, open the official demo above. It uses Desmos API v1.12. The field below is only for loading these expressions into this page.",
+      getKey:"Get a Desmos API key ↗", key:"Optional: your API key", load:"Load into this page", loading:"Connecting to Desmos…",
+      open2d:"Open the official 2D demo (no key)", open3d:"Open the official 3D demo (no key)",
       privacy:"The key stays in page memory and is sent to Desmos to load its SDK. It is not included in exported state files. Browser extensions may still read page contents.",
-      expressions:"Initial expressions (Desmos LaTeX)", reset:"Reset graph", save:"Save state JSON", restore:"Import state", png:"Export PNG",
+      expressions:"Initial expressions (Desmos LaTeX)", expressions3d:"Initial expressions (Desmos 3D LaTeX)",
+      reset:"Reset graph", save:"Save state JSON", restore:"Import state", png:"Export PNG",
       howto:"Edit expressions on the left; scroll to zoom, drag to pan, and click a curve for coordinates. Try a=1 and y=ax^2 for a parameter slider. Save state before refreshing.",
+      howto3d:"Drag empty space to orbit and scroll to zoom. Try a=1 and z=a(x^2+y^2). The official 3D demo is a blank Calculator3D; this page loads your expressions after you connect. Save state before refreshing.",
+      demo2d:"Official 2D demo", demo3d:"Official 3D demo", docs2d:"2D docs", docs3d:"3D docs",
       ready:"Graph ready.", failed:"Could not load Desmos. Check your connection, API key, or browser console, then retry.",
       invalid:"Import failed: choose a valid Desmos state JSON file (up to 2 MB).", restored:"State imported.", saved:"State downloaded.", actionFailed:"Operation failed. Please retry or check the browser console.",
       footer:"Desmos MCP · Independent open-source project, not an official Desmos product. Browser edits do not automatically sync to the MCP session."
@@ -68,8 +96,22 @@
     document.documentElement.lang = graph.language;
     document.title = graph.title + " · Desmos MCP";
     el("title").textContent = graph.title;
-    for (const [id,key] of Object.entries({intro:"intro","setup-title":"setup","setup-help":"help","get-key":"getKey","key-label":"key",load:"load",privacy:"privacy","expressions-title":"expressions",reset:"reset",save:"save",restore:"restore",png:"png",howto:"howto",footer:"footer"})) el(id).textContent = messages[key];
+    el("mode").textContent = (is3d ? "3D · Calculator3D · API " : "2D · GraphingCalculator · API ") + apiVersion;
+    el("intro").textContent = is3d ? messages.intro3d : messages.intro;
+    if (is3d) messages.expressions = messages.expressions3d;
+    messages.howto = is3d ? messages.howto3d : messages.howto;
+    for (const [id,key] of Object.entries({
+      "setup-title":"setup","setup-help":"help","get-key":"getKey","key-label":"key",load:"load",privacy:"privacy",
+      "expressions-title":"expressions",reset:"reset",save:"save",restore:"restore",png:"png",howto:"howto",footer:"footer",
+      "demo-2d":"demo2d","demo-3d":"demo3d","docs-2d":"docs2d","docs-3d":"docs3d"
+    })) el(id).textContent = messages[key];
     el("expressions").textContent = graph.expressions.join("\n");
+    const demos = graph.officialDemos || {};
+    const demoHref = is3d ? demos["3d"] : demos["2d"];
+    if (demoHref) {
+      el("open-demo").href = demoHref;
+      el("open-demo").textContent = is3d ? messages.open3d : messages.open2d;
+    }
     let calculator, initialState;
     const status = (message,error=false) => {el("status").textContent=message;el("status").classList.toggle("error",error);};
     el("connect").addEventListener("submit", async event => {
@@ -83,13 +125,15 @@
           script=document.createElement("script");
           const timer=setTimeout(()=>{script.remove();reject(new Error("timeout"));},20000);
           script.onload=()=>{clearTimeout(timer);resolve();};script.onerror=()=>{clearTimeout(timer);reject(new Error("load"));};
-          script.src="https://www.desmos.com/api/v1.11/calculator.js?apiKey="+encodeURIComponent(key);
+          script.src="https://www.desmos.com/api/"+apiVersion+"/calculator.js?apiKey="+encodeURIComponent(key);
           document.head.append(script);
         });
+        const Ctor = is3d ? Desmos.Calculator3D : Desmos.GraphingCalculator;
+        if (typeof Ctor !== "function") throw new Error("constructor");
         el("workspace").hidden=false;
-        calculator=Desmos.GraphingCalculator(el("calculator"),{language:graph.language,capExpressionSize:true});
+        calculator=Ctor(el("calculator"),{language:graph.language,capExpressionSize:true});
         calculator.setExpressions(graph.expressions.map((latex,i)=>({id:"expression-"+i,latex})));
-        calculator.setMathBounds({left:graph.xRange[0],right:graph.xRange[1],bottom:graph.yRange[0],top:graph.yRange[1]});
+        if (!is3d) calculator.setMathBounds({left:graph.xRange[0],right:graph.xRange[1],bottom:graph.yRange[0],top:graph.yRange[1]});
         initialState=calculator.getState();
         el("setup").hidden=true;el("api-key").value="";status(messages.ready);
       } catch(error) {

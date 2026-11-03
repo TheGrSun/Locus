@@ -24,14 +24,14 @@ def server(tmp_path):
 
 async def test_guidance_prompts_and_validation(server):
     async with Client(server) as client:
-        assert len(await client.list_tools()) == 5
+        assert len(await client.list_tools()) == 11
         result = await client.call_tool("validate_formula", {"formula": "y=x^2"})
         assert result.data["valid"] is True
         invalid = await client.call_tool("validate_formula", {"formula": "2x"})
         assert invalid.data["valid"] is False and invalid.data["examples"]
         guide = await client.read_resource("resources://guide")
         assert "Desmos" in guide[0].text
-        for name in ("basic_graphing_assistant", "advanced_math_analysis"):
+        for name in ("basic_graphing_assistant", "advanced_math_analysis", "visualize_3d"):
             prompt = await client.get_prompt(name, {"formula": "sin(x)"})
             assert prompt.messages
 
@@ -77,6 +77,72 @@ async def test_interactive_resource_and_escape(server):
         assert "\\u003c/script" in content
         resource = await client.read_resource(result.data["resource_uri"])
         assert resource[0].text == content
+        rejected = await client.call_tool(
+            "create_interactive_graph", {"expressions": ["y=2*x"]}, raise_on_error=False
+        )
+        assert rejected.is_error
+        assert "LaTeX" in rejected.content[0].text
+
+
+async def test_surface_png_and_official_3d_demo(server):
+    async with Client(server) as client:
+        invalid = await client.call_tool("validate_formula", {"formula": "z = x^2 + y^2"})
+        assert invalid.data["next_tool"] == "plot_3d_surface"
+        result = await client.call_tool(
+            "plot_3d_surface", {"formula": "z = x^2 + y^2", "x_range": [-2, 2], "y_range": [-2, 2], "z_range": [0, 8]}
+        )
+        image = next(block for block in result.content if block.type == "image")
+        data = base64.b64decode(image.data)
+        assert data.startswith(b"\x89PNG")
+        assert Image.open(io.BytesIO(data)).size == (600, 400)
+        metadata = json.loads(next(block.text for block in result.content if block.type == "text"))
+        assert metadata["dimension"] == "3d"
+        assert "x, y, z" in metadata["interaction"]
+        assert "v1.12" in metadata["interaction"]
+        assert Path(metadata["path"]).read_bytes() == data
+        page = await client.call_tool(
+            "create_interactive_graph",
+            {"expressions": ["a=1", "z=a(x^2+y^2)"], "dimension": "3d", "language": "zh-CN"},
+        )
+        assert page.data["constructor"] == "Desmos.Calculator3D"
+        assert page.data["official_demo"] == "https://www.desmos.com/api/v1.12/docs/examples/3d.html"
+        html = Path(page.data["path"]).read_text(encoding="utf-8")
+        assert "Desmos.Calculator3D" in html
+        demos = await client.read_resource("resources://official-demos")
+        assert "404" in demos[0].text and "v1.12" in demos[0].text
+
+
+async def test_explore_returns_one_picture(server):
+    async with Client(server) as client:
+        explored = await client.call_tool(
+            "explore_functions",
+            {"formulas": ["x^2", "2*x"], "x_range": [-2, 2], "y_range": [-1, 4], "analysis_type": "basic"},
+        )
+        metadata = json.loads(next(block.text for block in explored.content if block.type == "text"))
+        assert [item["formula"] for item in metadata["analyses"]] == ["x^2", "2*x"]
+        assert metadata["analyses"][0]["domain"] == "Reals"
+        image = next(block for block in explored.content if block.type == "image")
+        assert Image.open(io.BytesIO(base64.b64decode(image.data))).size == (600, 400)
+        missing = await client.call_tool("plot_3d_surface", {}, raise_on_error=False)
+        assert missing.is_error
+        overlaid = await client.call_tool(
+            "plot_math_function",
+            {"formula": "x^2 if x < 0 else x", "x_range": [-2, 2], "show_derivative": True, "tangent_at": 1},
+        )
+        overlay_meta = json.loads(next(block.text for block in overlaid.content if block.type == "text"))
+        assert overlay_meta["overlays"] == ["derivative", "tangent at 1"]
+        points = await client.call_tool(
+            "plot_points", {"points": [[0, 0], [1, 1], [2, 4]], "formula": "x^2", "x_range": [-1, 3]}
+        )
+        assert json.loads(next(block.text for block in points.content if block.type == "text"))["dimension"] == "2d"
+        curve = await client.call_tool(
+            "plot_parametric", {"x": "cos(t)", "y": "sin(t)", "z": "t", "t_range": [0, 3.141592653589793]}
+        )
+        assert json.loads(next(block.text for block in curve.content if block.type == "text"))["dimension"] == "3d"
+        field = await client.call_tool(
+            "plot_vector_field", {"fx": "-y", "fy": "x", "x_range": [-2, 2], "y_range": [-2, 2], "density": 8}
+        )
+        assert any(block.type == "image" for block in field.content)
 
 
 async def test_timeout_terminates_worker():
@@ -126,6 +192,46 @@ async def test_slow_worker_startup_does_not_consume_calculation_timeout(monkeypa
     assert result == {"valid": True}
 
 
+async def test_worker_startup_error_is_reported(monkeypatch):
+    class Input:
+        def write(self, _data):
+            pass
+
+        async def drain(self):
+            pass
+
+        def close(self):
+            pass
+
+    class Output:
+        async def readline(self):
+            return b'{"error": "font cache failed"}\n'
+
+        async def read(self):
+            return b""
+
+    class Error:
+        async def read(self):
+            return b""
+
+    class Process:
+        stdin, stdout, stderr = Input(), Output(), Error()
+        returncode = 1
+
+        async def wait(self):
+            return 1
+
+        async def communicate(self):
+            return b"", b""
+
+    async def create(*_args, **_kwargs):
+        return Process()
+
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", create)
+    with pytest.raises(ToolError, match="font cache failed"):
+        await run_worker({"operation": "render"}, timeout=1)
+
+
 async def test_cancellation_reaps_worker(monkeypatch):
     original = asyncio.create_subprocess_exec
     started = asyncio.Event()
@@ -169,7 +275,13 @@ def test_config_relative_path_and_errors(tmp_path):
 def test_packaged_template():
     page = make_page(["y=x"], "Example", [-10, 10], [-10, 10], "en")
     assert "__GRAPH_DATA__" not in page
+    assert "__DEMO_2D__" not in page and "api/v1.11" not in page
     assert "GraphingCalculator" in page
+    assert "https://www.desmos.com/api/v1.12/docs/examples/parabola.html" in page
+    assert "https://www.desmos.com/api/v1.12/docs/examples/3d.html" in page
+    surface = make_page(["z=x^2+y^2"], "Surface", [-2, 2], [-2, 2], "zh-CN", "3d")
+    assert '"dimension": "3d"' in surface
+    assert "Calculator3D" in surface
 
 
 async def test_real_stdio_entrypoint(tmp_path):

@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-function page({failLoad = false} = {}) {
+function page({failLoad = false, dimension = '2d'} = {}) {
   const elements = new Map(), downloads = [], blobs = [], scripts = [];
   const element = id => {
     if (!elements.has(id)) elements.set(id, {
@@ -16,14 +16,16 @@ function page({failLoad = false} = {}) {
     return elements.get(id);
   };
   let state = {expressions: {list: []}};
-  const sdk = {GraphingCalculator() {
-    return {
-      setExpressions(list) {state.expressions.list = list;}, setMathBounds(bounds) {state.bounds = bounds;},
-      getState() {return JSON.parse(JSON.stringify(state));},
-      setState(value) {state = JSON.parse(JSON.stringify(value));},
-      screenshot() {return 'data:image/png;base64,test';}, destroy() {},
-    };
-  }};
+  const calculator = () => ({
+    setExpressions(list) {state.expressions.list = list;}, setMathBounds(bounds) {state.bounds = bounds;},
+    getState() {return JSON.parse(JSON.stringify(state));},
+    setState(value) {state = JSON.parse(JSON.stringify(value));},
+    screenshot() {return 'data:image/png;base64,test';}, destroy() {},
+  });
+  const sdk = {
+    GraphingCalculator() {state.kind = '2d'; return calculator();},
+    Calculator3D() {state.kind = '3d'; return calculator();},
+  };
   const context = {
     window: {}, Blob, console, encodeURIComponent,
     setTimeout: () => 1, clearTimeout() {},
@@ -40,7 +42,8 @@ function page({failLoad = false} = {}) {
   };
   const template = fs.readFileSync(path.join(__dirname, '../src/desmos_mcp/graph.html'), 'utf8');
   const code = template.match(/<script>([\s\S]*?)<\/script>/)[1].replace('__GRAPH_DATA__', JSON.stringify({
-    expressions: ['a=1', 'y=ax^2'], title: 'Test', xRange: [-6, 6], yRange: [-4, 8], language: 'zh-CN',
+    expressions: ['a=1', 'y=ax^2'], title: 'Test', xRange: [-6, 6], yRange: [-4, 8], language: 'zh-CN', dimension,
+    officialDemos: { '2d': 'https://example.com/2d', '3d': 'https://example.com/3d' },
   }));
   vm.runInNewContext(code, context);
   const connect = async () => {
@@ -70,6 +73,25 @@ test('connect, export, import, and reset with a simulated Desmos SDK', async () 
   assert.equal(fileInput.value, '');
   p.element('reset').onclick();
   assert.equal(p.state().expressions.list[0].latex, 'a=1');
+});
+
+test('3d page uses Calculator3D and does not apply 2d bounds', async () => {
+  const p = page({dimension: '3d'});
+  assert.match(p.element('mode').textContent, /3D · Calculator3D/);
+  await p.connect();
+  assert.equal(p.state().kind, '3d');
+  assert.equal(p.state().bounds, undefined);
+  assert.equal(p.element('open-demo').textContent, '打开官方 3D 示例（不需要 key）');
+  assert.equal(p.element('open-demo').href, 'https://example.com/3d');
+  assert.equal(p.element('workspace').hidden, false);
+});
+
+test('template names both constructors and does not point at the missing v1.11 demo', () => {
+  const template = fs.readFileSync(path.join(__dirname, '../src/desmos_mcp/graph.html'), 'utf8');
+  assert.match(template, /__DEMO_2D__/);
+  assert.match(template, /__DEMO_3D__/);
+  assert.match(template, /Calculator3D/);
+  assert.doesNotMatch(template, /api\/v1\.11/);
 });
 
 test('load errors return an actionable message and allow retry', async () => {

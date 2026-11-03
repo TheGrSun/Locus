@@ -12,11 +12,19 @@ Python 3.10+ · FastMCP 2.x · Apache-2.0 · 独立开源项目，非 Desmos 官
 | `validate_formula` | 标准化公式，或返回可操作的修正建议 | 离线 |
 | `plot_math_function` | 原生 PNG 图片及可选的保存路径 | 离线 |
 | `plot_multiple_functions` | 同一坐标系比较 1–12 个函数 | 离线 |
+| `explore_functions` | 这些曲线和每个公式的分析，一次返回 | 离线 |
+| `plot_3d_surface` | 同一视角下 1–6 个 `z = f(x, y)` 采样曲面 | 离线 |
+| `plot_points` | 二维或三维散点，可叠加一条公式 | 离线 |
+| `plot_parametric` | 参数曲线 `x(t), y(t)` 或再加 `z(t)` | 离线 |
+| `plot_vector_field` | 平面向量场 `(fx, fy)` 的箭头 | 离线 |
+| `simulate_physics` | 抛体、简谐振动，或自定义 `x(t)`、`y(t)`，并给出轨迹 | 离线 |
 | `analyze_formula` | 定义域；可进一步计算值域、导数、驻点和不可导候选点 | 离线 |
-| `create_interactive_graph` | 可编辑公式、调滑块、缩放、导出 PNG、保存和导入状态的 HTML | 浏览器、联网、自有 Desmos API key |
+| `create_interactive_graph` | 独立 HTML，使用官方 v1.12 API：可编辑公式、滑块、缩放、导出 PNG、保存和导入 JSON 状态。链接的 Desmos 示例不需要 key。把这些公式载入本页时使用自己的 key | 浏览器和网络。个人 API key 可选，只有载入自己的公式时才需要 |
 
-离线工具使用 `y = x^2`、`2*x + 1`、`sin(x)`、`sqrt(x)`、`abs(x)` 等语法。
-交互工具使用 **Desmos LaTeX**，例如 `a=1`、`y=ax^2`、`x^2+y^2=9`。
+离线曲线工具使用 `y = x^2`、`2*x + 1`、`sin(x)`、`sqrt(x)`、`abs(x)` 等语法。
+`plot_3d_surface` 可以画一个曲面，也可以用 `formulas` 同时画最多六个，都在同一个视角里。对话里的图不能旋转。旋转和缩放在下面的实时演示页或 Desmos 3D 页面里完成。
+`explore_functions` 把多条 `y=f(x)` 画在一起，并在同一次结果里返回每条的分析。
+交互工具使用 **Desmos LaTeX**，例如 `a=1`、`y=ax^2`、`x^2+y^2=9`，三维为 `z=a(x^2+y^2)`。
 两种输入格式有明确区分；交互公式由连接后的 Desmos 计算器检查。
 
 ## 助手会返回什么
@@ -28,16 +36,16 @@ Python 3.10+ · FastMCP 2.x · Apache-2.0 · 独立开源项目，非 Desmos 官
 需要在浏览器中打开文件，连接 Desmos 后编辑图表。客户端可以提供自己的预览界面，
 但不是所有 MCP 客户端都会直接渲染 HTML 资源。本地文件 URI 也不是可公开分享的网址。
 
-目前工具支持二维图形，三维绘图尚未实现。
+离线三维是采样曲面图。符号分析仍然只针对二维函数。
+交互三维使用 Desmos API v1.12 的官方构造函数 `Desmos.Calculator3D`。
 
 ## 验证状态
 
-0.2 实现在本地 macOS/Python 3.10 环境通过了 42 个 Python 测试和 3 个隔离的 JavaScript 控制器测试。
-另在独立安装的 wheel 中验证了命令入口、PNG 返回及 HTML 模板打包。
+0.2 在本地 macOS/Python 3.10 通过了 42 个 Python 测试和 3 个隔离的 JavaScript 控制器测试。另在独立安装的 wheel 中验证了命令入口、PNG 返回及 HTML 模板打包。
+之后在 Linux / Python 3.11 上，`ruff check` 通过，47 个 pytest 测试通过，5 个 Node 控制器测试通过。
 CI 已配置 Linux、macOS、Windows 和 Python 3.10/3.12；不表示远端所有任务已经运行通过。
 
-HTML 控制器测试使用模拟 Desmos SDK。真实 API key 连接和浏览器布局验证仍待完成；
-审阅环境的浏览器策略阻止了自动访问本地 HTML 文件。
+HTML 控制器测试使用模拟 Desmos SDK。生成的二维和三维连接页已在浏览器中打开：页面会标明构造函数、初始公式，以及 v1.12 官方示例链接。官方三维示例会打开空白的 `Calculator3D`。尚未使用用户自己的 API key 完成一次真实连接。
 
 ## 安装并接入
 
@@ -65,10 +73,42 @@ uv run desmos-mcp
 
 > 创建 a=1、y=ax^2 的交互图，用中文引导我观察参数变化。
 
-第二个请求会生成 HTML 文件。打开后，在 [Desmos](https://www.desmos.com/my-api)申请自己的 key，填入页面即可连接。
-Key 在页面内存中使用，用来从官方加载 SDK；不会写入生成的 HTML 或导出的状态 JSON。
-页面提供公式编辑、滑块、恢复初始图、图片导出及状态导入/导出指导，不会自动启动浏览器。
-网页修改不会自动回传给 MCP 助手；刷新或关闭前请保存状态。
+> 画出 z = sin(x)*cos(y)，再给我一个可编辑的三维 Desmos 页面。
+
+对话里直接返回图片。三维结果是一张 x、y、z 坐标轴的标准视图。
+下面的官方示例在浏览器里打开即可，不需要 API key。
+
+可编辑页面要打开返回的 HTML 文件。在 [Desmos](https://www.desmos.com/my-api) 申请自己的 key，填入页面后连接。Key 只留在页面内存里，用来加载官方 SDK；不会写入生成的 HTML，也不会出现在导出的状态 JSON 里。页面说明公式编辑、滑块、恢复初始图、导出图片，以及状态的保存和导入。不会自动打开浏览器。网页上的修改不会自动回到助手；关闭前请保存状态。
+
+想自己拖动图像时，在仓库里运行：
+
+```sh
+uv run python demo/server.py
+```
+
+然后打开 http://127.0.0.1:8766。页面只在本机监听。
+
+页面只有两种模式：二维曲线和三维曲面。可以直接粘贴普通公式或 LaTeX，例如 `\sin(x)\cos(y)`、`x^{2}`。侧栏切换语言和模式。三维打开时先有 x、y、z 坐标轴，拖动旋转，滚轮缩放，按钮可以回到默认方向、从正上方看 XY，或放大缩小。二维曲线上这些按钮改的是坐标范围，还可以勾选画出导数。
+
+页面链向已核实可打开的官方示例，对应稳定版 API **v1.12**：
+
+- [二维抛物线示例](https://www.desmos.com/api/v1.12/docs/examples/parabola.html) 用 `GraphingCalculator` 载入 `y=x^2`。
+- [三维示例](https://www.desmos.com/api/v1.12/docs/examples/3d.html) 是空白的 `Calculator3D`。
+- [二维文档](https://www.desmos.com/api/v1.12/docs/index.html) 与 [三维文档](https://www.desmos.com/api/v1.12/docs/3d.html)。
+
+`https://www.desmos.com/api/v1.11/docs/examples/3d.html` 返回 HTTP 404。v1.11 的三维文档虽然写了 `examples/3d.html`，该相对链接在 v1.11 上并不存在。v1.13 要到 2027 年春天才成为稳定生产版本。生成的页面不会复用 Desmos 官方示例 HTML 里的 API key。
+
+## Agent harness
+
+把本仓库作为 Cursor 项目根目录时，会加载三件东西：
+
+| 部分 | 作用 |
+| --- | --- |
+| [AGENTS.md](AGENTS.md) | 短契约：用哪套语法、key 填在哪里、哪个官方示例是真的 |
+| [.cursor/skills/desmos-mcp/SKILL.md](.cursor/skills/desmos-mcp/SKILL.md) | 助手在选择工具前读取的 skill |
+| [.cursor/hooks.json](.cursor/hooks.json) | `sessionStart` 注入路由；`beforeMCPExecution` 在语法混用时提醒；`postToolUse` 提醒把文件路径和官方示例交回给用户 |
+
+其他 MCP 客户端从服务器说明、`resources://guide`、`resources://official-demos`，以及 `basic_graphing_assistant`、`advanced_math_analysis`、`visualize_3d` 这三个 prompt 得到同一套路由。
 
 ## 配置
 
@@ -102,10 +142,11 @@ Key 在页面内存中使用，用来从官方加载 SDK；不会写入生成的
 - `basic` 计算定义域；`detailed` 增加值域和导数分析；`critical_points` 分别报告驻点和不可导候选点，不直接断言其为极值。
 - 符号求解未完成时返回警告。`ConditionSet` 不代表无解；复杂计算可能超时。
 - PNG 来自有限采样，间断点或高频振荡附近应缩小区间进一步检查。
-- Desmos 官方提供[浏览器 JavaScript SDK](https://www.desmos.com/api/v1.11/docs/index.html)，没有使用假定的 REST 绘图接口。
-  离线工具不需要 key；只有在交互页面点击连接后才请求 SDK。
+- Desmos 官方提供[浏览器 JavaScript SDK v1.12](https://www.desmos.com/api/v1.12/docs/index.html)，没有使用假定的 REST 绘图接口。
+  三维使用 [`Calculator3D`](https://www.desmos.com/api/v1.12/docs/3d.html)。离线工具不需要 key；只有在交互页面点击连接后才请求 SDK。
 - 返回路径属于服务端机器。远程客户端需要另外传输文件，不能直接打开另一台机器的本地路径。
-- 暂不提供符号积分、极限工具、3D 分析及网页与 MCP 的自动状态同步。
+- 暂不提供符号积分、极限工具、三维符号分析，以及网页与 MCP 的自动状态同步。
+  `plot_3d_surface` 只是 `z=f(x,y)` 的有限采样。
 
 ## 开发与迁移
 

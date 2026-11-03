@@ -1,7 +1,7 @@
 [project]
 name = "desmos-mcp"
-version = "0.2.0"
-description = "Safe offline math analysis and plotting, plus interactive Desmos graphs over MCP"
+version = "0.3.0"
+description = "Safe offline math analysis and 2D/3D plotting, plus interactive Desmos graphs over MCP"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

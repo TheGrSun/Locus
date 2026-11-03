@@ -28,7 +28,7 @@ or `where uv` (Windows). Do not rely on the GUI inheriting your terminal PATH.
 ## Check the connection
 
 1. Run `uv run desmos-mcp --help` from the repository. It should print CLI help.
-2. Restart/reconnect the client; inspect its tool list for the five tools in the README.
+2. Restart/reconnect the client; inspect its tool list for the tools in the README.
 3. Call `validate_formula` with `{"formula":"y = x^2"}`; expect `valid: true`.
 4. Call `plot_math_function` with `{"formula":"sin(x)"}`; expect text metadata and native image content.
 5. If the client cannot display images, open the saved PNG path on the server machine.
@@ -43,6 +43,8 @@ or `where uv` (Windows). Do not rely on the GUI inheriting your terminal PATH.
 | `2x`, LaTeX or an implicit equation fails offline | Use `2*x`; send Desmos LaTeX to `create_interactive_graph`. |
 | Calculation timeout | Simplify the formula, use `basic` analysis, or deliberately raise the configured timeout. |
 | Interactive graph shows connection screen | Enter your own Desmos API key and allow access to `www.desmos.com`. |
+| 3D page still looks like the 2D calculator | Call `create_interactive_graph` with `"dimension":"3d"`. The constructor is `Calculator3D`. |
+| Linked 3D demo 404s | Use the v1.12 URLs in the README. The v1.11 `examples/3d.html` path does not exist. |
 | Key/network error | Check the key with Desmos and inspect browser console; the page allows retrying. |
 | Local file cannot be opened by remote client | Transfer it from the server; local paths are not public share links. |
 
