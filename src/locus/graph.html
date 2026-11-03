@@ -31,21 +31,21 @@
     <h1 id="title"></h1>
     <p id="mode" class="mode"></p>
     <p id="intro"></p>
-    <p class="hint demos" id="demos">
-      <a id="demo-2d" href="__DEMO_2D__" target="_blank" rel="noopener noreferrer"></a>
-      <a id="demo-3d" href="__DEMO_3D__" target="_blank" rel="noopener noreferrer"></a>
-      <a id="docs-2d" href="__DOCS_2D__" target="_blank" rel="noopener noreferrer"></a>
-      <a id="docs-3d" href="__DOCS_3D__" target="_blank" rel="noopener noreferrer"></a>
-    </p>
   </header>
   <main>
     <section id="setup" class="setup" aria-labelledby="setup-title">
       <h2 id="setup-title"></h2>
       <p id="setup-help"></p>
-      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off" required>
-        <button id="load" class="primary" type="submit"></button></form>
-      <p><a id="open-demo" target="_blank" rel="noopener noreferrer"></a></p>
       <a id="get-key" href="https://www.desmos.com/my-api" target="_blank" rel="noopener noreferrer"></a>
+      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off">
+        <button id="load" class="primary" type="submit"></button></form>
+      <p class="hint demos" id="demos">
+        <a id="open-demo" target="_blank" rel="noopener noreferrer"></a>
+        <a id="demo-2d" href="__DEMO_2D__" target="_blank" rel="noopener noreferrer"></a>
+        <a id="demo-3d" href="__DEMO_3D__" target="_blank" rel="noopener noreferrer"></a>
+        <a id="docs-2d" href="__DOCS_2D__" target="_blank" rel="noopener noreferrer"></a>
+        <a id="docs-3d" href="__DOCS_3D__" target="_blank" rel="noopener noreferrer"></a>
+      </p>
       <p class="hint" id="privacy"></p><h2 id="expressions-title"></h2><pre id="expressions"></pre>
     </section>
     <p id="status" class="status" role="status" aria-live="polite"></p>
@@ -63,10 +63,10 @@
     const apiVersion = graph.apiVersion || "__API_VERSION__";
     const is3d = graph.dimension === "3d";
     const messages = graph.language === "zh-CN" ? {
-      intro:"三维结果是一张 x、y、z 坐标轴的标准视图。官方示例用的是 Desmos 自己的 API，不需要你的 key。",
-      intro3d:"三维结果是一张 x、y、z 坐标轴的标准视图。上方官方 3D 示例可以直接打开，不需要你的 key。",
-      setup:"用你的 Desmos API key 连接", help:"到 Desmos 申请 key，填入后把下面的公式载入本页。Key 只留在本页内存里，用来加载官方 SDK，不会写入文件，也不会出现在导出的状态里。官方示例不需要 key，但不会载入这些公式。",
-      getKey:"前往 Desmos 申请 API key ↗", key:"Desmos API key", load:"连接并载入公式", loading:"正在连接 Desmos…",
+      intro:"编辑公式，拖动参数滑块，探索图像如何变化。",
+      intro3d:"拖动旋转这张曲面。要把公式载入 Desmos 时，再填自己的 API key。",
+      setup:"连接 Desmos 交互计算器", help:"官方示例不需要 key。只有要把下面的公式载入本页时，才填写自己的 Desmos API key。Key 只留在本页内存里，用来加载官方 SDK，不会写入文件，也不会出现在导出的状态里。",
+      getKey:"前往 Desmos 申请 API key ↗", key:"Desmos API key（可选）", load:"载入本页", loading:"正在连接 Desmos…",
       open2d:"打开官方 2D 示例（不需要 key）", open3d:"打开官方 3D 示例（不需要 key）",
       privacy:"Key 仅在本页内存中使用，并发送给 Desmos 加载 SDK；不会写入导出的状态文件。浏览器扩展仍可能读取本页内容。",
       expressions:"初始公式（Desmos LaTeX）", expressions3d:"初始公式（Desmos 3D LaTeX）",
@@ -78,10 +78,10 @@
       invalid:"导入失败：请选择 Desmos 导出的有效状态 JSON（不超过 2 MB）。", restored:"已导入状态。", saved:"已下载状态文件。", actionFailed:"操作失败，请重试或检查浏览器控制台。",
       footer:"Locus · 独立开源项目，非 Desmos 官方产品。网页修改不会自动同步回 MCP 会话。"
     } : {
-      intro:"A 3D result is one view of the x, y, and z axes. The official demo uses Desmos's own API and does not need your key.",
-      intro3d:"A 3D result is one view of the x, y, and z axes. The official 3D demo above opens without your key.",
-      setup:"Connect with your Desmos API key", help:"Get a key from Desmos and enter it to load the expressions below. The key stays in page memory, loads the official SDK, and is not written into this file or exported state. The official demo needs no key and does not load these expressions.",
-      getKey:"Get a Desmos API key ↗", key:"Desmos API key", load:"Connect and load", loading:"Connecting to Desmos…",
+      intro:"Edit expressions, move parameter sliders, and explore how the graph changes.",
+      intro3d:"Orbit this surface. Enter your own API key only if you want these expressions loaded into Desmos.",
+      setup:"Connect the Desmos calculator", help:"The official demo does not need a key. Enter your own Desmos API key only to load the expressions below into this page. The key stays in page memory, loads the official SDK, and is not written into this file or exported state.",
+      getKey:"Get a Desmos API key ↗", key:"Desmos API key (optional)", load:"Load into this page", loading:"Connecting to Desmos…",
       open2d:"Open the official 2D demo (no key)", open3d:"Open the official 3D demo (no key)",
       privacy:"The key stays in page memory and is sent to Desmos to load its SDK. It is not included in exported state files. Browser extensions may still read page contents.",
       expressions:"Initial expressions (Desmos LaTeX)", expressions3d:"Initial expressions (Desmos 3D LaTeX)",

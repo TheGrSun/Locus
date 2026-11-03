@@ -2,8 +2,8 @@
 
 [中文](README.zh.md) · [Client setup](docs/CLIENTS.md) · [Examples](docs/EXAMPLES.md)
 
-Plot a formula from the chat. Edit it in Desmos when you want.
-Install with `uv run locus`. The repository is [Locus](https://github.com/TheGrSun/Locus).
+Plot a formula from the chat. Open it in Desmos when you want to edit it.
+Install with `uv run locus`. The repository is [Locus](https://github.com/TheGrSun/Locus). A Desmos API key is optional: official demos open without one, and a key is only for loading your expressions into the local page.
 Python 3.10+ · FastMCP 2.x · Apache-2.0 · Independent project, not affiliated with Desmos.
 
 <a href="https://glama.ai/mcp/servers/@TheGrSun/Locus">

@@ -2,8 +2,8 @@
 
 [English](README.md) · [客户端接入](docs/CLIENTS.md) · [调用示例](docs/EXAMPLES.md)
 
-在对话里画出公式。想拖动时，再放进 Desmos。
-安装命令是 `uv run locus`，仓库是 [Locus](https://github.com/TheGrSun/Locus)。
+在对话里画出公式。想编辑时，再打开 Desmos。
+安装命令是 `uv run locus`，仓库是 [Locus](https://github.com/TheGrSun/Locus)。Desmos API key 是可选项：官方示例不用 key，只有把公式载入本地页面时才需要。
 Python 3.10+ · FastMCP 2.x · Apache-2.0 · 独立开源项目，非 Desmos 官方产品。
 
 ## 可以做什么
