@@ -5,8 +5,8 @@ from pathlib import Path
 from locus.physics import motion, oscillator, projectile
 
 
-def _demo():
-    spec = importlib.util.spec_from_file_location("demo_server", Path(__file__).parents[1] / "demo" / "server.py")
+def _page():
+    spec = importlib.util.spec_from_file_location("page_server", Path(__file__).parents[1] / "page" / "server.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -44,16 +44,16 @@ def test_motion_replaces_non_finite_samples_with_null():
 
 
 def test_static_file_rejects_a_prefix_sibling(tmp_path):
-    root = tmp_path / "demo"
+    root = tmp_path / "page"
     root.mkdir()
     page = root / "index.html"
     page.write_text("ok", encoding="utf-8")
-    sibling = tmp_path / "demo-backup"
+    sibling = tmp_path / "page-backup"
     sibling.mkdir()
     secret = sibling / "secret.html"
     secret.write_text("no", encoding="utf-8")
-    assert _demo().safe_static(root, "/../demo-backup/secret.html") is None
-    assert _demo().safe_static(root, "/index.html") == page.resolve()
+    assert _page().safe_static(root, "/../page-backup/secret.html") is None
+    assert _page().safe_static(root, "/index.html") == page.resolve()
 
 
 def test_physics_result_keeps_the_facts_and_drops_the_samples():

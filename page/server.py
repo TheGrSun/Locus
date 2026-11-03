@@ -168,7 +168,7 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     warm_render_backend()
-    host = os.environ.get("LOCUS_DEMO_HOST", "127.0.0.1")
+    host = os.environ.get("LOCUS_HOST", "127.0.0.1")
     server = ThreadingHTTPServer((host, 8766), Handler)
     print(f"http://{host}:8766", flush=True)
     server.serve_forever()

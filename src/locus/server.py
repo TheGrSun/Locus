@@ -385,7 +385,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
         """Plot 1–6 surfaces z=f(x,y) together and return one native PNG. Example formulas: ['z = x^2 + y^2', 'z = x'].
 
         A single formula argument still works. This is one sampled view, not symbolic 3D analysis.
-        Orbit and zoom are in the local demo page.
+        Orbit and zoom are in the local page.
         """
         try:
             chosen = _surfaces(formula, formulas)

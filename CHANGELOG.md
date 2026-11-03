@@ -31,5 +31,5 @@ Replace `config.json` with the new README example: the unused `desmos` settings 
 The obsolete `use_api` tool parameter is temporarily accepted but emits a warning; offline PNG is always local.
 `validate_formula` and `analyze_formula` now return structured objects; plotting returns text plus image content.
 Prompt arguments are flat (`formula`, `analysis_focus`) rather than nested `args`.
-The demonstration `hello` tool is removed. Default files no longer go to the desktop.
+The sample `hello` tool is removed. Default files no longer go to the desktop.
 The project is pinned to the FastMCP 2.x API family; upgrade the major version deliberately.

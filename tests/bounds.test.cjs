@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const source = fs.readFileSync(path.join(__dirname, '../demo/bounds.js'), 'utf8').replace(/^export /gm, '');
+const source = fs.readFileSync(path.join(__dirname, '../page/bounds.js'), 'utf8').replace(/^export /gm, '');
 const context = {module: {exports: {}}};
 vm.runInNewContext(`${source}\nmodule.exports = { finiteBounds, viewSpan };`, context);
 const {finiteBounds, viewSpan} = context.module.exports;

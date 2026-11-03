@@ -99,7 +99,7 @@ The chat returns the picture directly. A 3D result is one view of the x, y, and 
 To drag a graph yourself, from this repository:
 
 ```sh
-uv run python demo/server.py
+uv run python page/server.py
 ```
 
 Then open http://127.0.0.1:8766. The page listens on this machine only.

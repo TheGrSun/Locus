@@ -95,7 +95,7 @@ uv run locus
 想自己拖动图像时，在仓库里运行：
 
 ```sh
-uv run python demo/server.py
+uv run python page/server.py
 ```
 
 然后打开 http://127.0.0.1:8766。页面只在本机监听。

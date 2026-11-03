@@ -4,12 +4,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const source = fs.readFileSync(path.join(__dirname, '../demo/i18n.js'), 'utf8').replace(/^export /gm, '');
+const source = fs.readFileSync(path.join(__dirname, '../page/i18n.js'), 'utf8').replace(/^export /gm, '');
 const context = {module: {exports: {}}};
 vm.runInNewContext(`${source}\nmodule.exports = { LANGS, SYMBOL_ROWS, translate, translateError };`, context);
 const {LANGS, SYMBOL_ROWS, translate, translateError} = context.module.exports;
 
-test('the demo defaults to English and offers the requested languages', () => {
+test('the page defaults to English and offers the requested languages', () => {
   assert.equal(LANGS[0][0], 'en');
   assert.equal(LANGS.map(([id]) => id).join(','), 'en,zh-CN,zh-TW,ja,ko,de,fr,es,ru');
   assert.equal(translate('en', 'surface'), '3D surface');
