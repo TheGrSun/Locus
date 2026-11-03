@@ -31,8 +31,12 @@ def _from_latex(source: str) -> str:
     while previous != source:
         previous = source
         source = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"((\1)/(\2))", source)
-    source = re.sub(r"\)\s*(?=[A-Za-z(\\])", ")*", source)
-    source = re.sub(r"(\d)\s*(?=[A-Za-z(\\])", r"\1*", source)
+    source = re.sub(r"\)\s*(?!(?:if|else)\b)(?=[A-Za-z(\\])", ")*", source)
+    source = re.sub(
+        r"(\d)\s*(?=(?:sin|cos|tan|asin|acos|atan|sinh|cosh|tanh|exp|log|ln|sqrt|abs|Abs|pi)\b)",
+        r"\1*",
+        source,
+    )
     return source.replace("{", "").replace("}", "").replace("\\", "")
 
 
