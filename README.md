@@ -6,10 +6,6 @@ A locus is the set of points a formula picks out. In the chat, tell the model to
 Install with `uv run locus`. The repository is [Locus](https://github.com/TheGrSun/Locus).
 Python 3.10+ · FastMCP 2.x · Apache-2.0.
 
-<a href="https://glama.ai/mcp/servers/@TheGrSun/Locus">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@TheGrSun/Locus/badge" alt="Locus MCP server" />
-</a>
-
 ## What works
 
 | Tool | Result | Requirements |
