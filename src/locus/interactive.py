@@ -35,7 +35,7 @@ def make_page(
     )
     # Do not let an expression or title terminate the inline script element.
     data = data.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    template = files("desmos_mcp").joinpath("graph.html").read_text(encoding="utf-8")
+    template = files("locus").joinpath("graph.html").read_text(encoding="utf-8")
     template = (
         template.replace("__API_VERSION__", API_VERSION)
         .replace("__DEMO_2D__", DEMO_2D)

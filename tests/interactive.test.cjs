@@ -40,7 +40,7 @@ function page({failLoad = false, dimension = '2d'} = {}) {
       }},
     },
   };
-  const template = fs.readFileSync(path.join(__dirname, '../src/desmos_mcp/graph.html'), 'utf8');
+  const template = fs.readFileSync(path.join(__dirname, '../src/locus/graph.html'), 'utf8');
   const code = template.match(/<script>([\s\S]*?)<\/script>/)[1].replace('__GRAPH_DATA__', JSON.stringify({
     expressions: ['a=1', 'y=ax^2'], title: 'Test', xRange: [-6, 6], yRange: [-4, 8], language: 'zh-CN', dimension,
     officialDemos: { '2d': 'https://example.com/2d', '3d': 'https://example.com/3d' },
@@ -87,7 +87,7 @@ test('3d page uses Calculator3D and does not apply 2d bounds', async () => {
 });
 
 test('template names both constructors and does not point at the missing v1.11 demo', () => {
-  const template = fs.readFileSync(path.join(__dirname, '../src/desmos_mcp/graph.html'), 'utf8');
+  const template = fs.readFileSync(path.join(__dirname, '../src/locus/graph.html'), 'utf8');
   assert.match(template, /__DEMO_2D__/);
   assert.match(template, /__DEMO_3D__/);
   assert.match(template, /Calculator3D/);

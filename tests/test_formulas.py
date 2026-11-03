@@ -1,8 +1,8 @@
 import pytest
 import sympy as sp
 
-from desmos_mcp.formulas import T, X, Y, parse_component, parse_formula, parse_surface, validate_range
-from desmos_mcp.worker import analyze
+from locus.formulas import T, X, Y, parse_component, parse_formula, parse_surface, validate_range
+from locus.worker import analyze
 
 
 @pytest.mark.parametrize(

@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import sympy as sp
 
-from desmos_mcp.formulas import X, Y, looks_like_surface, parse_formula, parse_surface, validate_range
-from desmos_mcp.worker import warm_render_backend
+from locus.formulas import X, Y, looks_like_surface, parse_formula, parse_surface, validate_range
+from locus.worker import warm_render_backend
 
 ROOT = Path(__file__).parent.resolve()
 
@@ -168,7 +168,7 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     warm_render_backend()
-    host = os.environ.get("DESMOS_MCP_DEMO_HOST", "127.0.0.1")
+    host = os.environ.get("LOCUS_DEMO_HOST", "127.0.0.1")
     server = ThreadingHTTPServer((host, 8766), Handler)
     print(f"http://{host}:8766", flush=True)
     server.serve_forever()

@@ -12,9 +12,9 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from PIL import Image
 
-from desmos_mcp.config import Rendering, Settings, load_settings
-from desmos_mcp.interactive import make_page
-from desmos_mcp.server import create_server, run_worker
+from locus.config import Rendering, Settings, load_settings
+from locus.interactive import make_page
+from locus.server import create_server, run_worker
 
 
 @pytest.fixture
@@ -285,7 +285,7 @@ def test_packaged_template():
 
 
 async def test_real_stdio_entrypoint(tmp_path):
-    parameters = StdioServerParameters(command=sys.executable, args=["-m", "desmos_mcp.server"], cwd=tmp_path)
+    parameters = StdioServerParameters(command=sys.executable, args=["-m", "locus.server"], cwd=tmp_path)
     async with stdio_client(parameters) as (read, write):
         async with ClientSession(read, write) as client:
             await client.initialize()

@@ -58,7 +58,7 @@ async def run_worker(payload: dict, timeout: float) -> dict:
     process = await asyncio.create_subprocess_exec(
         sys.executable,
         "-m",
-        "desmos_mcp.worker",
+        "locus.worker",
         payload["operation"],
         stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,

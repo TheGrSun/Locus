@@ -10,7 +10,11 @@ wheels/
 .venv
 
 # Log files
+*.log
 watchmedo.log
+
+# Editor and agent state
+.cursor/
 
 # Direnv
 .direnv

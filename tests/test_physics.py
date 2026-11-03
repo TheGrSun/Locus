@@ -2,7 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 
-from desmos_mcp.physics import motion, oscillator, projectile
+from locus.physics import motion, oscillator, projectile
 
 
 def _demo():
@@ -57,7 +57,7 @@ def test_static_file_rejects_a_prefix_sibling(tmp_path):
 
 
 def test_physics_result_keeps_the_facts_and_drops_the_samples():
-    from desmos_mcp.worker import render_physics
+    from locus.worker import render_physics
 
     result = render_physics(
         {

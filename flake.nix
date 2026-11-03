@@ -79,7 +79,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           pythonSet = pythonSets.${system}.overrideScope editableOverlay;
-          virtualenv = pythonSet.mkVirtualEnv "desmos-mcp-dev-env" workspace.deps.all;
+          virtualenv = pythonSet.mkVirtualEnv "locus-dev-env" workspace.deps.all;
         in
         {
           default = pkgs.mkShell {
@@ -101,13 +101,13 @@
       );
 
       packages = forAllSystems (system: {
-        default = pythonSets.${system}.mkVirtualEnv "desmos-mcp-env" workspace.deps.default;
+        default = pythonSets.${system}.mkVirtualEnv "locus-env" workspace.deps.default;
       });
 
       apps = forAllSystems (system: {
         default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/desmos-mcp";
+          program = "${self.packages.${system}.default}/bin/locus";
         };
       });
     };

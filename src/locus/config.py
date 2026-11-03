@@ -24,8 +24,8 @@ class Settings(BaseModel):
 
 
 def load_settings(config_path: str | None = None) -> Settings:
-    """Explicit argument > DESMOS_MCP_CONFIG > ./config.json > defaults."""
-    selected = config_path or os.environ.get("DESMOS_MCP_CONFIG")
+    """Explicit argument > LOCUS_CONFIG > ./config.json > defaults."""
+    selected = config_path or os.environ.get("LOCUS_CONFIG")
     path = Path(selected).expanduser() if selected else Path.cwd() / "config.json"
     if selected or path.is_file():
         data = json.loads(path.read_text(encoding="utf-8"))

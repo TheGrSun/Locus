@@ -125,19 +125,11 @@ uv run python demo/server.py
 
 ## Agent harness
 
-把本仓库作为 Cursor 项目根目录时，会加载三件东西：
-
-| 部分 | 作用 |
-| --- | --- |
-| [AGENTS.md](AGENTS.md) | 短契约：用哪套语法、key 填在哪里、哪个官方示例是真的 |
-| [.cursor/skills/desmos-mcp/SKILL.md](.cursor/skills/desmos-mcp/SKILL.md) | 助手在选择工具前读取的 skill |
-| [.cursor/hooks.json](.cursor/hooks.json) | `sessionStart` 注入路由；`beforeMCPExecution` 在语法混用时提醒；`postToolUse` 提醒把文件路径和官方示例交回给用户 |
-
-其他 MCP 客户端从服务器说明、`resources://guide`、`resources://official-demos`，以及 `basic_graphing_assistant`、`advanced_math_analysis`、`visualize_3d` 这三个 prompt 得到同一套路由。
+对外的路由是服务器说明、`resources://guide`、`resources://official-demos`，以及 `basic_graphing_assistant`、`advanced_math_analysis`、`visualize_3d` 这三个 prompt。[AGENTS.md](AGENTS.md) 是这套规则的短契约。`.cursor` 这类编辑器状态不放进仓库。
 
 ## 配置
 
-优先级：`--config 路径` → `DESMOS_MCP_CONFIG` 环境变量 → 当前目录 `config.json` → 内置默认值。
+优先级：`--config 路径` → `LOCUS_CONFIG` 环境变量 → 当前目录 `config.json` → 内置默认值。
 相对输出路径以配置文件所在目录为基准。
 
 ```json

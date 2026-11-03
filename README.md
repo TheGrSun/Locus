@@ -129,19 +129,11 @@ The page links the verified official demos for stable API **v1.12**:
 
 ## Agent harness
 
-Cursor loads three pieces when this repository is the project root:
-
-| Piece | Role |
-| --- | --- |
-| [AGENTS.md](AGENTS.md) | Short contract: which syntax, where the key goes, which demo is real |
-| [.cursor/skills/desmos-mcp/SKILL.md](.cursor/skills/desmos-mcp/SKILL.md) | Skill the agent reads before choosing a tool |
-| [.cursor/hooks.json](.cursor/hooks.json) | `sessionStart` injects the route; `beforeMCPExecution` warns on mixed syntax; `postToolUse` reminds the agent to hand back the file path and the official demo |
-
-Other MCP clients get the same route from the server instructions, `resources://guide`, `resources://official-demos`, and the prompts `basic_graphing_assistant`, `advanced_math_analysis`, and `visualize_3d`.
+The published route is the server instructions, `resources://guide`, `resources://official-demos`, and the prompts `basic_graphing_assistant`, `advanced_math_analysis`, and `visualize_3d`. [AGENTS.md](AGENTS.md) is the short contract for those rules. Editor state, including `.cursor`, is not part of this repository.
 
 ## Configuration
 
-Configuration priority: `--config PATH` → `DESMOS_MCP_CONFIG` → `./config.json` → built-in defaults.
+Configuration priority: `--config PATH` → `LOCUS_CONFIG` → `./config.json` → built-in defaults.
 Relative output directories resolve against the configuration file, not the caller's current directory.
 
 ```json

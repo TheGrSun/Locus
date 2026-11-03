@@ -8,7 +8,7 @@ Use Node.js 22+ to run the isolated controller tests with `node --test tests/int
 - `worker.py`: computation and headless plotting in disposable processes.
 - `config.py`: configuration discovery, defaults and validation.
 - `interactive.py` / `graph.html`: HTML serialization and the official Desmos browser integration.
-- `.cursor/skills/desmos-mcp/SKILL.md`, `.cursor/hooks.json`, and `AGENTS.md`: the agent harness. Keep them aligned with `server.py` tool names and the v1.12 demo URLs.
+- `AGENTS.md`: the short routing contract. Keep it aligned with `server.py` tool names and the v1.12 demo URLs. Do not commit `.cursor` or log files.
 
 Keep user expressions out of Python eval/exec. Do not add `print` to the MCP process's stdout; it carries protocol messages.
 Worker stdout is an internal JSON channel. Do not embed API keys in generated artifacts.
