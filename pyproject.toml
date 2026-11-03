@@ -1,7 +1,7 @@
 [project]
-name = "desmos-mcp"
+name = "locus"
 version = "0.3.0"
-description = "Safe offline math analysis and 2D/3D plotting, plus interactive Desmos graphs over MCP"
+description = "Locus: plot a formula from the chat, and edit it in Desmos when you want"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-desmos-mcp = "desmos_mcp.server:main"
+locus = "desmos_mcp.server:main"
 
 [build-system]
 requires = ["hatchling"]

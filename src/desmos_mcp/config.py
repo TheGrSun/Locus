@@ -19,7 +19,7 @@ class Rendering(BaseModel):
 class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     rendering: Rendering = Field(default_factory=Rendering)
-    output_dir: Path = Field(default_factory=lambda: Path(tempfile.gettempdir()) / "desmos-mcp")
+    output_dir: Path = Field(default_factory=lambda: Path(tempfile.gettempdir()) / "locus")
     timeout_seconds: float = Field(default=20, ge=1, le=120)
 
 

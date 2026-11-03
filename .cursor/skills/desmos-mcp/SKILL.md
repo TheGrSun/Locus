@@ -1,14 +1,14 @@
 ---
 name: desmos-mcp
 description: >-
-  Plot and analyze functions with the Desmos MCP server: offline 2D PNG,
+  Plot and analyze functions with Locus (command locus): offline 2D PNG,
   offline z=f(x,y) surfaces, symbolic y=f(x) analysis, and editable Desmos 2D
   or 3D pages. Use when the user asks to graph, plot, visualize, compare, or
   analyze a formula, surface, slider, implicit curve, or Desmos graph, including
   三维, 曲面, 函数图像, and official Desmos demos.
 ---
 
-# Desmos MCP
+# Locus
 
 The server is a local stdio MCP process. Offline plots and the official Desmos demos need no API key. A key is only for loading your expressions into the local HTML page.
 

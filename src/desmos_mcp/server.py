@@ -26,7 +26,7 @@ SurfaceList = Annotated[list[Formula], Field(min_length=1, max_length=6)]
 Bounds = Annotated[list[float], Field(min_length=2, max_length=2)]
 AnalysisType = Literal["basic", "detailed", "critical_points"]
 
-GUIDE = f"""Desmos MCP workflow. Stable Desmos API is {API_VERSION}.
+GUIDE = f"""Locus workflow. Stable Desmos API is {API_VERSION}.
 Official live demos: 2D {DEMO_2D} · 3D {DEMO_3D}
 Docs: {DOCS_2D} · {DOCS_3D}
 The v1.11 URL examples/3d.html returns HTTP 404. Do not link it. Read resources://official-demos.
@@ -126,7 +126,7 @@ def _save_png(cfg: Settings, prefix: str, png: str) -> str | None:
 
 def create_server(settings: Settings | None = None) -> FastMCP:
     cfg = settings if settings is not None else load_settings()
-    mcp = FastMCP("desmos-mcp", instructions=GUIDE)
+    mcp = FastMCP("locus", instructions=GUIDE)
     worker_slots = asyncio.Semaphore(2)
 
     async def calculate(payload: dict):
@@ -136,7 +136,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
     @mcp.resource("resources://info")
     def info() -> dict:
         return {
-            "name": "desmos-mcp",
+            "name": "locus",
             "version": __version__,
             "offline_png": True,
             "offline_3d": True,
@@ -687,7 +687,7 @@ def _require_desmos_latex(expressions: list[str]) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Desmos MCP: offline PNG and interactive Desmos graphs over stdio")
+    parser = argparse.ArgumentParser(description="Locus: plot a formula from the chat.")
     parser.add_argument("--config", help="Path to a JSON configuration file")
     args = parser.parse_args()
     try:

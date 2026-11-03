@@ -1,12 +1,13 @@
-# Desmos MCP
+# Locus
 
 [中文](README.zh.md) · [Client setup](docs/CLIENTS.md) · [Examples](docs/EXAMPLES.md)
 
-Give an AI assistant offline function plots and symbolic analysis, plus editable Desmos graphs in a browser.
+Plot a formula from the chat. Edit it in Desmos when you want.
+Install with `uv run locus`. The repository is [Locus](https://github.com/TheGrSun/Locus).
 Python 3.10+ · FastMCP 2.x · Apache-2.0 · Independent project, not affiliated with Desmos.
 
-<a href="https://glama.ai/mcp/servers/@TheGrSun/Desmos-MCP">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@TheGrSun/Desmos-MCP/badge" alt="Desmos Server MCP server" />
+<a href="https://glama.ai/mcp/servers/@TheGrSun/Locus">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@TheGrSun/Locus/badge" alt="Locus MCP server" />
 </a>
 
 ## What works
@@ -80,16 +81,16 @@ The HTML controller tests simulate the Desmos SDK. The generated 2D and 3D setup
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed, then:
 
 ```sh
-git clone https://github.com/TheGrSun/Desmos-MCP.git
-cd Desmos-MCP
+git clone https://github.com/TheGrSun/Locus.git
+cd Locus
 uv sync --locked
-uv run desmos-mcp --help
+uv run locus --help
 ```
 
 Connect your MCP client using the [copyable configuration](docs/CLIENTS.md). The server uses stdio:
 
 ```sh
-uv run desmos-mcp
+uv run locus
 ```
 
 Waiting for input is normal: this command starts an MCP server, not a command-line chat.
@@ -156,7 +157,7 @@ Relative output directories resolve against the configuration file, not the call
 }
 ```
 
-Without a configuration file, artifacts go to the operating system's temporary directory under `desmos-mcp`.
+Without a configuration file, artifacts go to the operating system's temporary directory under `locus`.
 Use an explicit directory for lasting files. File names contain UUIDs. `save_files=false` disables saved PNGs;
 interactive HTML is always saved because it is the result of that tool. Images still return as native MCP content.
 Generated files are not automatically deleted. Delete unwanted artifacts from the configured output directory.

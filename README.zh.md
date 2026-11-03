@@ -1,8 +1,9 @@
-# Desmos MCP
+# Locus
 
 [English](README.md) · [客户端接入](docs/CLIENTS.md) · [调用示例](docs/EXAMPLES.md)
 
-让 AI 助手离线绘制函数、分析数学性质，并生成可在浏览器中编辑的 Desmos 交互图表。
+在对话里画出公式。想拖动时，再放进 Desmos。
+安装命令是 `uv run locus`，仓库是 [Locus](https://github.com/TheGrSun/Locus)。
 Python 3.10+ · FastMCP 2.x · Apache-2.0 · 独立开源项目，非 Desmos 官方产品。
 
 ## 可以做什么
@@ -76,16 +77,16 @@ HTML 控制器测试使用模拟 Desmos SDK。生成的二维和三维连接页�
 先安装 [uv](https://docs.astral.sh/uv/getting-started/installation/)，然后执行：
 
 ```sh
-git clone https://github.com/TheGrSun/Desmos-MCP.git
-cd Desmos-MCP
+git clone https://github.com/TheGrSun/Locus.git
+cd Locus
 uv sync --locked
-uv run desmos-mcp --help
+uv run locus --help
 ```
 
 按[客户端接入文档](docs/CLIENTS.md)配置 MCP。手动启动命令：
 
 ```sh
-uv run desmos-mcp
+uv run locus
 ```
 
 启动后等待输入是正常现象：这是 stdio MCP 服务，需要客户端通过协议调用，不是终端聊天程序。
@@ -152,7 +153,7 @@ uv run python demo/server.py
 }
 ```
 
-没有配置文件时，文件保存在系统临时目录下的 `desmos-mcp` 中；长期保存请指定输出目录。
+没有配置文件时，文件保存在系统临时目录下的 `locus` 中；长期保存请指定输出目录。
 文件名含 UUID，避免并发覆盖。`save_files=false` 只关闭 PNG 落盘，MCP 仍返回图片；交互 HTML 始终保存。
 文件不会自动清理，可在输出目录手动删除不需要的图表。
 

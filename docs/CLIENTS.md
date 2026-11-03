@@ -10,15 +10,15 @@ For clients accepting `mcpServers` JSON (for example Claude Desktop):
 ```json
 {
   "mcpServers": {
-    "desmos-mcp": {
+    "locus": {
       "command": "uv",
-      "args": ["--directory", "/ABSOLUTE/PATH/Desmos-MCP", "run", "--locked", "desmos-mcp", "--config", "/ABSOLUTE/PATH/Desmos-MCP/config.json"]
+      "args": ["--directory", "/ABSOLUTE/PATH/Locus", "run", "--locked", "locus", "--config", "/ABSOLUTE/PATH/Locus/config.json"]
     }
   }
 }
 ```
 
-Replace **both** repository paths. On Windows use an absolute path such as `C:\\Projects\\Desmos-MCP` inside JSON.
+Replace **both** repository paths. On Windows use an absolute path such as `C:\\Projects\\Locus` inside JSON.
 For clients using another configuration format, copy the same command and argument array into its stdio server settings.
 JSON 的两个仓库路径都需要替换；使用其他配置格式的客户端时，保留相同 command 和 args 即可。
 
@@ -27,7 +27,7 @@ or `where uv` (Windows). Do not rely on the GUI inheriting your terminal PATH.
 
 ## Check the connection
 
-1. Run `uv run desmos-mcp --help` from the repository. It should print CLI help.
+1. Run `uv run locus --help` from the repository. It should print CLI help.
 2. Restart/reconnect the client; inspect its tool list for the tools in the README.
 3. Call `validate_formula` with `{"formula":"y = x^2"}`; expect `valid: true`.
 4. Call `plot_math_function` with `{"formula":"sin(x)"}`; expect text metadata and native image content.
