@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { finiteBounds as bounds, viewSpan } from "./bounds.js";
-import { LANGS, translate, translateError } from "./i18n.js";
+import { LANGS, translate, translateError } from "./i18n.js?v=2";
 
 const COLORS = ["#4f86c6", "#d16b66", "#5aa57a", "#8a6bb8", "#e09a4a", "#6e767d"];
 const AXIS = { x: "#d6453d", y: "#2c6cb5", z: "#2e9a5a" };

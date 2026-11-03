@@ -18,7 +18,7 @@ export const SYMBOL_ROWS = [
 
 const TEXT = {
   en: {
-    title: "GRAPH", surface: "3D surface", curve: "2D curve", parametric: "Parametric curve", vector: "Vector field", points: "Points", physics: "Physics",
+    title: "Locus", surface: "3D surface", curve: "2D curve", parametric: "Parametric curve", vector: "Vector field", points: "Points", physics: "Physics",
     hint: "Drag to orbit, scroll to zoom, right-click to pan", derivative: "Plot derivative", remove: "Remove",
     orientDefault: "Default view", orientXY: "XY view", zoomIn: "Zoom in", zoomOut: "Zoom out", symbols: "Insert a symbol", sketch: "Sketch fit",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), empty for a plane curve",
@@ -36,7 +36,7 @@ const TEXT = {
     errSketch: "Draw a stroke that actually changes.",
   },
   "zh-CN": {
-    title: "函数图", surface: "三维曲面", curve: "二维曲线", parametric: "参数曲线", vector: "向量场", points: "散点", physics: "物理运动",
+    title: "Locus", surface: "三维曲面", curve: "二维曲线", parametric: "参数曲线", vector: "向量场", points: "散点", physics: "物理运动",
     hint: "拖动旋转，滚轮缩放，右键平移", derivative: "显示导数曲线", remove: "删除",
     orientDefault: "默认方向", orientXY: "XY 方向", zoomIn: "放大", zoomOut: "缩小", symbols: "点击插入符号", sketch: "手绘拟合",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t)，平面曲线留空",
@@ -54,7 +54,7 @@ const TEXT = {
     errSketch: "请画出一段有起伏的曲线。",
   },
   "zh-TW": {
-    title: "函數圖", surface: "三維曲面", curve: "二維曲線", parametric: "參數曲線", vector: "向量場", points: "散點", physics: "物理運動",
+    title: "Locus", surface: "三維曲面", curve: "二維曲線", parametric: "參數曲線", vector: "向量場", points: "散點", physics: "物理運動",
     hint: "拖曳旋轉，滾輪縮放，右鍵平移", derivative: "顯示導數曲線", remove: "刪除",
     orientDefault: "預設方向", orientXY: "XY 方向", zoomIn: "放大", zoomOut: "縮小", symbols: "點擊插入符號",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t)，平面曲線留空",
@@ -67,7 +67,7 @@ const TEXT = {
     errCount: "請提供 1 到 400 個點，每行是 x y 或 x y z。", errSame: "請統一使用 x y 或 x y z。", errMotion: "未知的運動類型。", errMode: "未知的計算類型。",
   },
   ja: {
-    title: "グラフ", surface: "3D 曲面", curve: "2D 曲線", parametric: "パラメトリック曲線", vector: "ベクトル場", points: "点", physics: "物理運動",
+    title: "Locus", surface: "3D 曲面", curve: "2D 曲線", parametric: "パラメトリック曲線", vector: "ベクトル場", points: "点", physics: "物理運動",
     hint: "ドラッグで回転、ホイールで拡大、右クリックで移動", derivative: "導関数を表示", remove: "削除",
     orientDefault: "標準方向", orientXY: "XY 方向", zoomIn: "拡大", zoomOut: "縮小", symbols: "記号を挿入",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t)。平面曲線なら空欄",
@@ -80,7 +80,7 @@ const TEXT = {
     errCount: "1 から 400 点を、1 行に x y または x y z で入力してください。", errSame: "x y と x y z は混ぜないでください。", errMotion: "不明な運動の種類です。", errMode: "不明な計算の種類です。",
   },
   ko: {
-    title: "그래프", surface: "3D 곡면", curve: "2D 곡선", parametric: "매개변수 곡선", vector: "벡터장", points: "점", physics: "물리 운동",
+    title: "Locus", surface: "3D 곡면", curve: "2D 곡선", parametric: "매개변수 곡선", vector: "벡터장", points: "점", physics: "물리 운동",
     hint: "드래그로 회전, 휠로 확대, 오른쪽 버튼으로 이동", derivative: "도함수 표시", remove: "삭제",
     orientDefault: "기본 방향", orientXY: "XY 방향", zoomIn: "확대", zoomOut: "축소", symbols: "기호 삽입",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), 평면 곡선이면 비움",
@@ -93,7 +93,7 @@ const TEXT = {
     errCount: "1개에서 400개의 점을 한 줄에 x y 또는 x y z로 입력하세요.", errSame: "x y와 x y z를 섞지 마세요.", errMotion: "알 수 없는 운동 종류입니다.", errMode: "알 수 없는 계산 종류입니다.",
   },
   de: {
-    title: "GRAPH", surface: "3D-Fläche", curve: "2D-Kurve", parametric: "Parameterkurve", vector: "Vektorfeld", points: "Punkte", physics: "Physik",
+    title: "Locus", surface: "3D-Fläche", curve: "2D-Kurve", parametric: "Parameterkurve", vector: "Vektorfeld", points: "Punkte", physics: "Physik",
     hint: "Ziehen dreht, Rad zoomt, Rechtsklick verschiebt", derivative: "Ableitung zeigen", remove: "Entfernen",
     orientDefault: "Standardansicht", orientXY: "XY-Ansicht", zoomIn: "Vergrößern", zoomOut: "Verkleinern", symbols: "Symbol einfügen",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), leer für eine ebene Kurve",
@@ -106,7 +106,7 @@ const TEXT = {
     errCount: "1 bis 400 Punkte, je Zeile x y oder x y z.", errSame: "Entweder nur x y oder nur x y z verwenden.", errMotion: "Unbekannte Bewegungsart.", errMode: "Unbekannte Berechnungsart.",
   },
   fr: {
-    title: "GRAPHE", surface: "Surface 3D", curve: "Courbe 2D", parametric: "Courbe paramétrique", vector: "Champ de vecteurs", points: "Points", physics: "Physique",
+    title: "Locus", surface: "Surface 3D", curve: "Courbe 2D", parametric: "Courbe paramétrique", vector: "Champ de vecteurs", points: "Points", physics: "Physique",
     hint: "Glisser pour tourner, molette pour zoomer, clic droit pour déplacer", derivative: "Afficher la dérivée", remove: "Retirer",
     orientDefault: "Vue par défaut", orientXY: "Vue XY", zoomIn: "Zoom avant", zoomOut: "Zoom arrière", symbols: "Insérer un symbole",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), vide pour une courbe plane",
@@ -119,7 +119,7 @@ const TEXT = {
     errCount: "Donnez 1 à 400 points, une ligne x y ou x y z.", errSame: "Utilisez soit tous les points x y, soit tous les points x y z.", errMotion: "Type de mouvement inconnu.", errMode: "Type de calcul inconnu.",
   },
   es: {
-    title: "GRÁFICA", surface: "Superficie 3D", curve: "Curva 2D", parametric: "Curva paramétrica", vector: "Campo vectorial", points: "Puntos", physics: "Física",
+    title: "Locus", surface: "Superficie 3D", curve: "Curva 2D", parametric: "Curva paramétrica", vector: "Campo vectorial", points: "Puntos", physics: "Física",
     hint: "Arrastra para girar, la rueda amplía, clic derecho desplaza", derivative: "Mostrar la derivada", remove: "Quitar",
     orientDefault: "Vista predeterminada", orientXY: "Vista XY", zoomIn: "Acercar", zoomOut: "Alejar", symbols: "Insertar un símbolo",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), vacío para una curva plana",
@@ -132,7 +132,7 @@ const TEXT = {
     errCount: "Da de 1 a 400 puntos, una línea x y o x y z.", errSame: "Usa todos los puntos x y o todos los puntos x y z.", errMotion: "Tipo de movimiento desconocido.", errMode: "Tipo de cálculo desconocido.",
   },
   ru: {
-    title: "ГРАФИК", surface: "3D-поверхность", curve: "2D-кривая", parametric: "Параметрическая кривая", vector: "Векторное поле", points: "Точки", physics: "Физика",
+    title: "Locus", surface: "3D-поверхность", curve: "2D-кривая", parametric: "Параметрическая кривая", vector: "Векторное поле", points: "Точки", physics: "Физика",
     hint: "Тяните для поворота, колесо меняет масштаб, правая кнопка сдвигает", derivative: "Показать производную", remove: "Удалить",
     orientDefault: "Обычный вид", orientXY: "Вид XY", zoomIn: "Приблизить", zoomOut: "Отдалить", symbols: "Вставить символ",
     phSurface: "z = sin(x)*cos(y)", phCurve: "sin(x)", phXt: "x(t) = cos(t)", phYt: "y(t) = sin(t)", phZt: "z(t), пусто для плоской кривой",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Desmos MCP · Interactive graph</title>
+  <title>Locus · Interactive graph</title>
   <style>
     :root {font-family:system-ui,-apple-system,sans-serif;color:#172c27;background:#eef3ef;color-scheme:light}
     *{box-sizing:border-box}body{margin:0}header{padding:24px 32px 18px;border-bottom:1px solid #d5e0d8;background:#fff}
@@ -75,7 +75,7 @@
       demo2d:"官方 2D 示例", demo3d:"官方 3D 示例", docs2d:"2D 文档", docs3d:"3D 文档",
       ready:"图表已就绪。", failed:"无法加载 Desmos。请检查网络、API key 或浏览器控制台，然后重试。",
       invalid:"导入失败：请选择 Desmos 导出的有效状态 JSON（不超过 2 MB）。", restored:"已导入状态。", saved:"已下载状态文件。", actionFailed:"操作失败，请重试或检查浏览器控制台。",
-      footer:"Desmos MCP · 独立开源项目，非 Desmos 官方产品。网页修改不会自动同步回 MCP 会话。"
+      footer:"Locus · 独立开源项目，非 Desmos 官方产品。网页修改不会自动同步回 MCP 会话。"
     } : {
       intro:"A 3D result is one view of the x, y, and z axes. The official demo uses Desmos's own API and does not need your key.",
       intro3d:"A 3D result is one view of the x, y, and z axes. The official 3D demo above opens without your key.",
@@ -90,11 +90,11 @@
       demo2d:"Official 2D demo", demo3d:"Official 3D demo", docs2d:"2D docs", docs3d:"3D docs",
       ready:"Graph ready.", failed:"Could not load Desmos. Check your connection, API key, or browser console, then retry.",
       invalid:"Import failed: choose a valid Desmos state JSON file (up to 2 MB).", restored:"State imported.", saved:"State downloaded.", actionFailed:"Operation failed. Please retry or check the browser console.",
-      footer:"Desmos MCP · Independent open-source project, not an official Desmos product. Browser edits do not automatically sync to the MCP session."
+      footer:"Locus · Independent open-source project, not an official Desmos product. Browser edits do not automatically sync to the MCP session."
     };
     const el = id => document.getElementById(id);
     document.documentElement.lang = graph.language;
-    document.title = graph.title + " · Desmos MCP";
+    document.title = graph.title + " · Locus";
     el("title").textContent = graph.title;
     el("mode").textContent = (is3d ? "3D · Calculator3D · API " : "2D · GraphingCalculator · API ") + apiVersion;
     el("intro").textContent = is3d ? messages.intro3d : messages.intro;

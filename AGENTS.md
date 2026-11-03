@@ -1,4 +1,4 @@
-# Desmos MCP agent harness
+# Locus agent harness
 
 This repository is the MCP server plus the Cursor harness that teaches an agent how to use it.
 
