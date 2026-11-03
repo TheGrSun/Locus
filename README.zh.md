@@ -2,7 +2,7 @@
 
 [English](README.md) · [客户端接入](docs/CLIENTS.md) · [调用示例](docs/EXAMPLES.md)
 
-在对话里画出公式。
+Locus 的意思是：一条公式所确定的全部点。在对话里直接告诉模型，把更复杂的函数画出来。几条曲线可以叠在同一张图上，几张曲面可以叠在同一组 x、y、z 坐标里，画好的图会回到这条对话中。
 安装命令是 `uv run locus`，仓库是 [Locus](https://github.com/TheGrSun/Locus)。
 Python 3.10+ · FastMCP 2.x · Apache-2.0。
 

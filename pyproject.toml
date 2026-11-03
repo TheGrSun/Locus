@@ -1,7 +1,7 @@
 [project]
 name = "locus"
 version = "0.3.0"
-description = "Locus: plot a formula from the chat, and edit it in Desmos when you want"
+description = "Locus: the points a formula picks out, drawn in the chat"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

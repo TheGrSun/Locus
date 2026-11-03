@@ -2,7 +2,7 @@
 
 [中文](README.zh.md) · [Client setup](docs/CLIENTS.md) · [Examples](docs/EXAMPLES.md)
 
-Plot a formula from the chat.
+A locus is the set of points a formula picks out. In the chat, tell the model to draw something harder than a single sine wave: several curves on one pair of axes, or several surfaces in one x, y, z view. Locus draws that picture and hands it back in the reply.
 Install with `uv run locus`. The repository is [Locus](https://github.com/TheGrSun/Locus).
 Python 3.10+ · FastMCP 2.x · Apache-2.0.
 
