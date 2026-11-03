@@ -31,6 +31,30 @@ Offline curve tools accept `y = x^2`, `2*x + 1`, `sin(x)`, `sqrt(x)`, `abs(x)`, 
 The interactive tool accepts **Desmos LaTeX**, including `a=1`, `y=ax^2`, `x^2+y^2=9`, and for 3D `z=a(x^2+y^2)`.
 These are separate syntax contracts. Interactive expressions are checked by Desmos when the page connects.
 
+## What the plots look like
+
+These pictures are the offline PNG results, not screenshots of Desmos. The live demo opens with the same two overlays already filled in.
+
+| Several 2D curves | Several 3D surfaces |
+| --- | --- |
+| ![sin, a damped wave, and a piecewise curve](docs/images/curves-overlay.png) | ![three surfaces on one x, y, z view](docs/images/surfaces-overlay.png) |
+| `sin(x)`, `exp(-x^2/8)*cos(2*x)`, and `x^2/20 if x < 0 else sin(x)/x` | `sin(x)*cos(y)`, `exp(-(x^2+y^2)/8)`, and `0.3*sin(2*x)+0.3*cos(2*y)` |
+
+| Curves | Surface |
+| --- | --- |
+| ![sin(x) and cos(x)](docs/images/curves.png) | ![z = sin(x)*cos(y)](docs/images/surface.png) |
+| `sin(x)` and `cos(x)` | `z = sin(x)*cos(y)`, one x, y, z view |
+
+| Points | Parametric curve |
+| --- | --- |
+| ![points on y = x^2](docs/images/points.png) | ![helix x=cos(t), y=sin(t), z=t](docs/images/parametric.png) |
+| Points on `y = x^2` | `x = cos(t)`, `y = sin(t)`, `z = t` |
+
+| Vector field | Projectile |
+| --- | --- |
+| ![vector field fx=-y, fy=x](docs/images/vector.png) | ![projectile at 20 m/s and 45 degrees](docs/images/physics.png) |
+| `fx = -y`, `fy = x` | Launch at 20 and 45 degrees |
+
 ## What the assistant returns
 
 An offline plotting call returns **native MCP PNG image content** plus text metadata containing the formula,
@@ -92,7 +116,7 @@ uv run python demo/server.py
 
 Then open http://127.0.0.1:8766. The page listens on this machine only.
 
-The page has two modes: a 2D curve and a 3D surface. Paste a plain formula or LaTeX such as `\sin(x)\cos(y)` or `x^{2}`. The sidebar switches language and mode. 3D opens with x, y, and z axes; drag to orbit, scroll to zoom, and use the buttons for the default view, a top-down XY view, or zoom. On a 2D curve those buttons change the window, and a checkbox can plot the derivative.
+The page has two modes, and each one opens with three formulas already drawn. 3D shows `sin(x)*cos(y)`, `exp(-(x^2+y^2)/8)`, and `0.3*sin(2*x)+0.3*cos(2*y)` on x, y, and z axes. 2D shows `sin(x)`, `exp(-x^2/8)*cos(2*x)`, and `x^2/20 if x < 0 else sin(x)/x`. Paste a plain formula or LaTeX such as `\sin(x)\cos(y)` or `x^{2}`. The sidebar switches language and mode, and each mode keeps its own formulas. Drag a 3D view to orbit, scroll to zoom, and use the buttons for the default view, a top-down XY view, or zoom. On a 2D curve those buttons change the window, and a checkbox can plot the derivative.
 
 The page links the verified official demos for stable API **v1.12**:
 

@@ -13,7 +13,16 @@ const plane = document.getElementById("plane");
 const stage = document.getElementById("stage");
 const viewport = document.getElementById("viewport");
 const context = plane.getContext("2d");
-let expressions = [""];
+const prepared = {
+  surfaces: ["sin(x)*cos(y)", "exp(-(x^2+y^2)/8)", "0.3*sin(2*x)+0.3*cos(2*y)"],
+  curves: ["sin(x)", "exp(-x^2/8)*cos(2*x)", "x^2/20 if x < 0 else sin(x)/x"],
+};
+const drafts = {
+  surfaces: prepared.surfaces.slice(),
+  curves: prepared.curves.slice(),
+};
+let expressions = drafts.surfaces.slice();
+let activeMode = "surfaces";
 let timer = 0;
 let userMoved = false;
 let requestSerial = 0;
@@ -424,13 +433,25 @@ function chooseMode() {
 document.addEventListener("click", () => closeMenus());
 
 document.getElementById("add").onclick = () => { expressions.push(""); renderRows(); };
-mode.onchange = () => { planeZoom = 1; setStage(mode.value === "surfaces"); extraFields(); chooseMode(); userMoved = false; schedule(); };
+mode.onchange = () => {
+  drafts[activeMode] = expressions.slice();
+  activeMode = mode.value;
+  expressions = drafts[activeMode].slice();
+  planeZoom = 1;
+  setStage(mode.value === "surfaces");
+  extraFields();
+  chooseMode();
+  userMoved = false;
+  renderRows();
+  schedule();
+};
 document.querySelectorAll(".window input").forEach((input) => { input.oninput = () => { userMoved = false; schedule(); }; });
 chooseLanguage();
 chooseMode();
 applyLanguage();
 setStage(true);
 buildAxes(-5, 5, -5, 5, -5, 5);
+schedule();
 function viewingPlane() { return renderer.domElement.classList.contains("hidden"); }
 
 function frame(modeName) {

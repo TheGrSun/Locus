@@ -27,6 +27,30 @@ Python 3.10+ · FastMCP 2.x · Apache-2.0 · 独立开源项目，非 Desmos 官
 交互工具使用 **Desmos LaTeX**，例如 `a=1`、`y=ax^2`、`x^2+y^2=9`，三维为 `z=a(x^2+y^2)`。
 两种输入格式有明确区分；交互公式由连接后的 Desmos 计算器检查。
 
+## 图长什么样
+
+下面是离线工具直接画出的 PNG，不是 Desmos 页面的截图。实时演示页打开时，二维和三维都已经填好同一组叠加公式。
+
+| 多条二维曲线 | 多张三维曲面 |
+| --- | --- |
+| ![正弦、衰减振荡和分段函数](docs/images/curves-overlay.png) | ![三张曲面叠在同一组 x、y、z 坐标上](docs/images/surfaces-overlay.png) |
+| `sin(x)`、`exp(-x^2/8)*cos(2*x)`、`x^2/20 if x < 0 else sin(x)/x` | `sin(x)*cos(y)`、`exp(-(x^2+y^2)/8)`、`0.3*sin(2*x)+0.3*cos(2*y)` |
+
+| 曲线 | 曲面 |
+| --- | --- |
+| ![sin(x) 与 cos(x)](docs/images/curves.png) | ![z = sin(x)*cos(y)](docs/images/surface.png) |
+| `sin(x)` 与 `cos(x)` | `z = sin(x)*cos(y)`，一张 x、y、z 视图 |
+
+| 散点 | 参数曲线 |
+| --- | --- |
+| ![落在 y = x^2 上的点](docs/images/points.png) | ![螺旋线 x=cos(t), y=sin(t), z=t](docs/images/parametric.png) |
+| 点落在 `y = x^2` 上 | `x = cos(t)`，`y = sin(t)`，`z = t` |
+
+| 向量场 | 抛体 |
+| --- | --- |
+| ![向量场 fx=-y, fy=x](docs/images/vector.png) | ![初速 20、仰角 45 度的抛体](docs/images/physics.png) |
+| `fx = -y`，`fy = x` | 初速 20、仰角 45 度 |
+
 ## 助手会返回什么
 
 离线绘图返回 **MCP 原生 PNG 图片内容**，同时返回公式、警告，以及启用保存时的文件路径等文本信息。
@@ -88,7 +112,7 @@ uv run python demo/server.py
 
 然后打开 http://127.0.0.1:8766。页面只在本机监听。
 
-页面只有两种模式：二维曲线和三维曲面。可以直接粘贴普通公式或 LaTeX，例如 `\sin(x)\cos(y)`、`x^{2}`。侧栏切换语言和模式。三维打开时先有 x、y、z 坐标轴，拖动旋转，滚轮缩放，按钮可以回到默认方向、从正上方看 XY，或放大缩小。二维曲线上这些按钮改的是坐标范围，还可以勾选画出导数。
+页面只有两种模式，打开时各自已经画好三条公式。三维是 `sin(x)*cos(y)`、`exp(-(x^2+y^2)/8)` 和 `0.3*sin(2*x)+0.3*cos(2*y)`，带 x、y、z 坐标轴。二维是 `sin(x)`、`exp(-x^2/8)*cos(2*x)` 和 `x^2/20 if x < 0 else sin(x)/x`。可以直接粘贴普通公式或 LaTeX，例如 `\sin(x)\cos(y)`、`x^{2}`。侧栏切换语言和模式，两种模式各自保留自己的公式。三维可以拖动旋转、滚轮缩放，按钮可以回到默认方向、从正上方看 XY，或放大缩小。二维曲线上这些按钮改的是坐标范围，还可以勾选画出导数。
 
 页面链向已核实可打开的官方示例，对应稳定版 API **v1.12**：
 
