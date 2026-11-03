@@ -40,12 +40,8 @@ or `where uv` (Windows). Do not rely on the GUI inheriting your terminal PATH.
 | Command not found | Run `uv sync --locked`; use an absolute `uv` path in the client. |
 | Server waits silently in the terminal | Normal stdio behavior; use an MCP client, not interactive typing. |
 | Invalid configuration | Replace the old `desmos` block; verify JSON and supported settings in README. |
-| `2x`, LaTeX or an implicit equation fails offline | Use `2*x`; send Desmos LaTeX to `create_interactive_graph`. |
+| `2x` or LaTeX fails offline | Write `2*x` and `sin(x)`. |
 | Calculation timeout | Simplify the formula, use `basic` analysis, or deliberately raise the configured timeout. |
-| Interactive graph shows connection screen | Enter your own Desmos API key and allow access to `www.desmos.com`. |
-| 3D page still looks like the 2D calculator | Call `create_interactive_graph` with `"dimension":"3d"`. The constructor is `Calculator3D`. |
-| Linked 3D demo 404s | Use the v1.12 URLs in the README. The v1.11 `examples/3d.html` path does not exist. |
-| Key/network error | Check the key with Desmos and inspect browser console; the page allows retrying. |
 | Local file cannot be opened by remote client | Transfer it from the server; local paths are not public share links. |
 
 Sampling and elicitation are not required. Guidance is available through resources and prompts, so clients without

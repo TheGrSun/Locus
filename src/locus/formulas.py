@@ -146,8 +146,7 @@ def parse_formula(formula: str) -> sp.Expr:
         "Enter a non-empty formula of at most 500 characters, e.g. y = sin(x).",
         "Use x^2, sin(x), y = 2*x + 1, or x^2 if x < 0 else x. Write multiplication explicitly as *.",
         "Supported syntax: numbers, x, pi, e, + - * / ^, piecewise if/else, and single-argument math functions. "
-        "Use plot_3d_surface for z=f(x,y). Use plot_parametric for expressions in t. "
-        "Use create_interactive_graph for Desmos LaTeX, sliders, or implicit equations.",
+        "Use plot_3d_surface for z=f(x,y). Use plot_parametric for expressions in t.",
     )
 
 
@@ -158,8 +157,7 @@ def parse_surface(formula: str) -> sp.Expr:
         r"^\s*z\s*=\s*",
         "Enter a non-empty surface of at most 500 characters, e.g. z = sin(x)*cos(y).",
         "Use z = sin(x)*cos(y) or x^2 + y^2. Write multiplication explicitly as *.",
-        "Surfaces use numbers, x, y, pi, e, + - * / ^, and single-argument math functions. "
-        "Use create_interactive_graph with dimension 3d for Desmos LaTeX, sliders, or implicit surfaces.",
+        "Surfaces use numbers, x, y, pi, e, + - * / ^, and single-argument math functions.",
     )
 
 

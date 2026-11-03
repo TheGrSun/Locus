@@ -4,16 +4,13 @@
 
 - Add `explore_functions`, returning several y=f(x) curves and each analysis in one tool result.
 - `plot_3d_surface` accepts `formulas` and draws up to six surfaces on one view.
-- `plot_3d_surface` is one sampled view. Orbit and zoom stay in the live demo and the Desmos page, and start after the API key connects.
+- `plot_3d_surface` is one sampled view. Orbit and zoom stay on the local page.
 - Physics results return the measured facts with the picture. The sample columns stay on the server.
 - Add offline piecewise `if/else`, `plot_points`, `plot_parametric`, and `plot_vector_field`.
 - `plot_math_function` can overlay the derivative and a tangent line.
 - Add offline `plot_3d_surface` for sampled `z=f(x,y)` PNG images.
-- Add `dimension: "3d"` to `create_interactive_graph`, using `Desmos.Calculator3D`.
-- Pin the interactive page to stable Desmos API v1.12 and link the live official demos.
-  The v1.11 `examples/3d.html` URL returns HTTP 404. v1.13 is not stable until Spring 2027.
-- Publish `resources://official-demos` and the `visualize_3d` prompt.
-- Add a Cursor skill, session/MCP hooks, and `AGENTS.md` so an agent routes syntax and returns the file path plus the official demo.
+- Remove the interactive page, official example links, and API key entry.
+- Publish the `visualize_3d` prompt.
 
 ## 0.2.0 (unreleased)
 

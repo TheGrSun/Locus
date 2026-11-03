@@ -5,7 +5,6 @@ import asyncio
 import base64
 import json
 import math
-import re
 import sys
 from typing import Annotated, Literal
 from uuid import uuid4
@@ -18,7 +17,6 @@ from pydantic import Field
 from . import __version__
 from .config import Settings, load_settings
 from .formulas import FUNCTIONS, looks_like_surface, parse_formula, validate_range
-from .interactive import API_VERSION, DEMO_2D, DEMO_3D, DOCS_2D, DOCS_3D, make_page
 
 Formula = Annotated[str, Field(min_length=1, max_length=500)]
 FormulaList = Annotated[list[Formula], Field(min_length=1, max_length=12)]
@@ -26,10 +24,7 @@ SurfaceList = Annotated[list[Formula], Field(min_length=1, max_length=6)]
 Bounds = Annotated[list[float], Field(min_length=2, max_length=2)]
 AnalysisType = Literal["basic", "detailed", "critical_points"]
 
-GUIDE = f"""Locus workflow. Stable Desmos API is {API_VERSION}.
-Official live demos: 2D {DEMO_2D} · 3D {DEMO_3D}
-Docs: {DOCS_2D} · {DOCS_3D}
-The v1.11 URL examples/3d.html returns HTTP 404. Do not link it. Read resources://official-demos.
+GUIDE = """Locus workflow.
 1. Several y=f(x) curves plus analysis in ONE result: explore_functions.
    The PNG and each formula's analysis return together. Syntax: x^2, y = sin(x), 2*x, pi. Radians.
    plot_multiple_functions is the same shared-axes picture without analysis. Up to 12 curves.
@@ -38,19 +33,13 @@ The v1.11 URL examples/3d.html returns HTTP 404. Do not link it. Read resources:
    There is no symbolic 3D analysis tool.
 3. Domain, range, and derivatives of y=f(x): analyze_formula. Explain warnings.
    Stationary points are not necessarily extrema; nondifferentiable candidates may also matter.
-4. Sliders, implicit curves, inequalities, or an editable graph: create_interactive_graph.
-   dimension "2d" uses GraphingCalculator. dimension "3d" uses Calculator3D.
-   Expressions are DESMOS LATEX, not SymPy: ["a=1", "y=a x^2"] or ["a=1", "z=a(x^2+y^2)"].
-   The official demo for that dimension opens without the user's API key.
-   A key is only for loading these expressions into the local HTML. Do not embed a key.
-   No browser opens automatically. Browser edits do not sync back.
-5. Otherwise start with [-10, 10] and say so. Suggest one next experiment.
-6. Images are native MCP PNG content. Paths are on the SERVER machine.
+4. Otherwise start with [-10, 10] and say so. Suggest one next experiment.
+5. Images are native MCP PNG content. Paths are on the SERVER machine.
    Static graphs are finite samples; narrow the window near gaps or rapid oscillation.
-7. Physics motion: simulate_physics. projectile uses speed, angle_degrees and gravity. oscillator uses amplitude and angular_frequency. motion uses x(t) and y(t). The result is the trajectory plus time of flight, range, height, or period. No air resistance.
-8. Also offline: piecewise `x^2 if x < 0 else x`; plot_points for [x, y] or [x, y, z] data;
+6. Physics motion: simulate_physics. projectile uses speed, angle_degrees and gravity. oscillator uses amplitude and angular_frequency. motion uses x(t) and y(t). The result is the trajectory plus time of flight, range, height, or period. No air resistance.
+7. Also offline: piecewise `x^2 if x < 0 else x`; plot_points for [x, y] or [x, y, z] data;
    plot_parametric for x(t), y(t), optional z(t); plot_vector_field for fx(x,y) and fy(x,y).
-   plot_math_function can set show_derivative or tangent_at. These use explicit *, not Desmos LaTeX.
+   plot_math_function can set show_derivative or tangent_at. Write multiplication as *.
 """
 
 
@@ -140,58 +129,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             "version": __version__,
             "offline_png": True,
             "offline_3d": True,
-            "interactive_backend": f"Desmos JavaScript SDK {API_VERSION}",
-            "official_demos": "resources://official-demos",
             "guide": "resources://guide",
-        }
-
-    @mcp.resource("resources://official-demos")
-    def official_demos() -> dict:
-        return {
-            "api_version": API_VERSION,
-            "stable": True,
-            "note": (
-                "API v1.12 is the current stable production version. "
-                "v1.13 is not stable until Spring 2027. "
-                "https://www.desmos.com/api/v1.11/docs/examples/3d.html returns HTTP 404."
-            ),
-            "demos": {"2d": DEMO_2D, "3d": DEMO_3D},
-            "docs": {"2d": DOCS_2D, "3d": DOCS_3D},
-            "key": "https://www.desmos.com/my-api",
-            "constructors": {"2d": "Desmos.GraphingCalculator", "3d": "Desmos.Calculator3D"},
-        }
-
-    @mcp.resource("resources://demo-interaction")
-    def demo_interaction() -> dict:
-        return {
-            "observed_from": [DEMO_2D, DEMO_3D],
-            "method": "Official Desmos API v1.12 pages, plus REA capture-browser-scenario against the 3D demo.",
-            "rea": {
-                "repository": "https://github.com/morluto/rea",
-                "command": "rea capture-browser-scenario",
-                "evidence_id": "ev_880129d078a268ba61d0fe283519aece2285dbda61653914b38832b23c02bae7",
-                "page": DEMO_3D,
-                "accessibility": (
-                    "Desmos Graphing Calculator. Expression Bar has Add Item, Undo, Redo, "
-                    "Edit Expression List, and Hide Expression List. Expression 1 is an empty textbox. "
-                    "Graph Settings has Default Orientation, XY Orientation, Zoom In, and Zoom Out. "
-                    "The graph paper image says X, Y, and Z axes are visible from -5 to 5, with grid lines."
-                ),
-                "parabola_evidence_id": "ev_c9ab512e528cdc22498c0df1d7f834dbc51e5f77de76b6fea2e553d7a2a2c074",
-                "parabola_page": DEMO_2D,
-                "parabola_accessibility": (
-                    "Expression 1 reads y equals x squared and has a graph. "
-                    "Graph paper shows the x axis from -10 to 10 and the y axis across about -10.5 to 10.5, with grid lines. "
-                    "Zoom In and Zoom Out are present. One curve can be audio traced."
-                ),
-            },
-            "behavior": {
-                "layout": "Expression list on the left, graph filling the remaining page.",
-                "coordinates": "3D graph paper shows x, y, and z from -5 to 5 with grid lines.",
-                "input": "One expression row is ready for typing. Add Item creates another row.",
-                "pointer": "Drag orbits, the wheel and Zoom In/Out change scale, XY Orientation looks down on the xy-plane.",
-                "constructors": {"2d": "Desmos.GraphingCalculator", "3d": "Desmos.Calculator3D"},
-            },
         }
 
     @mcp.resource("resources://guide")
@@ -204,16 +142,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             "offline": ["y = x^2", "sin(x)", "exp(-x^2)*cos(3*x)", "1/x", "abs(x)"],
             "surfaces": ["z = x^2 + y^2", "sin(x)*cos(y)"],
             "functions": sorted(FUNCTIONS),
-            "interactive_latex": ["a=1", "y=a x^2", "x^2+y^2=9"],
-            "interactive_3d_latex": ["a=1", "z=a(x^2+y^2)"],
-            "official_demos": {"2d": DEMO_2D, "3d": DEMO_3D},
         }
-
-    @mcp.resource("graphs://{graph_id}", mime_type="text/html")
-    def graph_page(graph_id: str) -> str:
-        if not re.fullmatch(r"[0-9a-f]{32}", graph_id):
-            raise ValueError("Invalid graph ID.")
-        return (cfg.output_dir / f"graph_{graph_id}.html").read_text(encoding="utf-8")
 
     @mcp.prompt("basic_graphing_assistant")
     def basic_prompt(formula: str = "x^2") -> str:
@@ -231,12 +160,11 @@ def create_server(settings: Settings | None = None) -> FastMCP:
 
     @mcp.prompt("visualize_3d")
     def visualize_3d_prompt(formula: str = "z=x^2+y^2") -> str:
-        """Guide a 3D surface: offline PNG when the syntax is z=f(x,y), plus an editable Desmos 3D page."""
+        """Guide a 3D surface and return one sampled PNG."""
         return (
             f"Explore this 3D surface: {formula}. "
             "If it uses explicit * and variables x,y, call plot_3d_surface and describe the sampled image. "
-            "Also create_interactive_graph with dimension 3d and Desmos LaTeX, then give the HTML path and the "
-            f"official demo {DEMO_3D}. Do not claim symbolic 3D analysis exists.\n" + GUIDE
+            "Do not claim symbolic 3D analysis exists.\n" + GUIDE
         )
 
     @mcp.tool()
@@ -250,9 +178,6 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             if looks_like_surface(formula):
                 result["next_tool"] = "plot_3d_surface"
                 result["examples"] = ["z = x^2 + y^2", "sin(x)*cos(y)"]
-            elif "\\" in formula:
-                result["next_tool"] = "create_interactive_graph"
-                result["examples"] = ["y=\\sin(x)", "z=x^2+y^2"]
             return result
 
     @mcp.tool()
@@ -294,7 +219,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
         metadata = {"backend": "matplotlib", "formulas": formulas, "x_range": xs, "warnings": result["warnings"]}
         if use_api:
             metadata["warnings"].append(
-                "use_api is deprecated. PNG is offline; use create_interactive_graph for Desmos."
+                "use_api is deprecated and ignored. Plots are rendered locally."
             )
         if cfg.rendering.save_files:
             cfg.output_dir.mkdir(parents=True, exist_ok=True)
@@ -435,10 +360,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             "x_range": x_range,
             "y_range": y_range,
             "warnings": result["warnings"],
-            "interaction": (
-                "One view of the standard x, y, z axes. "
-                f"The official 3D demo uses Desmos API {API_VERSION} and opens without your own API key: {DEMO_3D}"
-            ),
+            "interaction": "One view of the standard x, y, z axes. The picture does not rotate.",
         }
         if z_range is not None:
             metadata["z_range"] = z_range
@@ -463,7 +385,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
         """Plot 1–6 surfaces z=f(x,y) together and return one native PNG. Example formulas: ['z = x^2 + y^2', 'z = x'].
 
         A single formula argument still works. This is one sampled view, not symbolic 3D analysis.
-        Orbit and zoom are in the live demo, or in create_interactive_graph with dimension 3d.
+        Orbit and zoom are in the local demo page.
         """
         try:
             chosen = _surfaces(formula, formulas)
@@ -627,63 +549,7 @@ def create_server(settings: Settings | None = None) -> FastMCP:
             "Simulating motion",
         )
 
-    @mcp.tool()
-    def create_interactive_graph(
-        expressions: FormulaList,
-        title: Annotated[str, Field(max_length=120)] = "Math exploration",
-        x_range: Bounds | None = None,
-        y_range: Bounds | None = None,
-        language: Literal["en", "zh-CN"] = "en",
-        dimension: Literal["2d", "3d"] = "2d",
-    ) -> dict:
-        """Create editable Desmos HTML. Input DESMOS LATEX, not Python/SymPy. dimension '3d' uses Calculator3D.
-
-        2D example: ['a=1','y=a x^2']. 3D example: ['a=1','z=a(x^2+y^2)'].
-        The official v1.12 demo opens without your own API key. A key is only used if you load these expressions in the local page.
-        The key is not embedded.
-        """
-        try:
-            xs, ys = validate_range(x_range, (-10, 10)), validate_range(y_range, (-10, 10))
-            _require_desmos_latex(expressions)
-        except ValueError as exc:
-            raise ToolError(str(exc)) from exc
-        graph_id = uuid4().hex
-        cfg.output_dir.mkdir(parents=True, exist_ok=True)
-        path = cfg.output_dir / f"graph_{graph_id}.html"
-        path.write_text(make_page(expressions, title, xs, ys, language, dimension), encoding="utf-8")
-        demo = DEMO_3D if dimension == "3d" else DEMO_2D
-        docs = DOCS_3D if dimension == "3d" else DOCS_2D
-        return {
-            "graph_id": graph_id,
-            "path": str(path.resolve()),
-            "uri": path.resolve().as_uri(),
-            "resource_uri": f"graphs://{graph_id}",
-            "expressions": expressions,
-            "dimension": dimension,
-            "api_version": API_VERSION,
-            "official_demo": demo,
-            "api_docs": docs,
-            "constructor": "Desmos.Calculator3D" if dimension == "3d" else "Desmos.GraphingCalculator",
-            "next_step": (
-                f"Open the official {dimension} demo without an API key: {demo}. "
-                "Use your own key on the HTML page only when you want these expressions loaded locally."
-            ),
-            "requires": ["Internet access to open the official demo"],
-            "optional": ["Your own Desmos API key, only to load expressions in the local HTML"],
-            "state_sync": "Save/import JSON in the browser. Browser edits do not update the MCP session.",
-        }
-
     return mcp
-
-
-def _require_desmos_latex(expressions: list[str]) -> None:
-    for expression in expressions:
-        if not expression.strip():
-            raise ValueError("Expressions cannot be blank. Try ['a=1', 'y=a x^2'] or ['a=1', 'z=a(x^2+y^2)'].")
-        if "*" in expression:
-            raise ValueError("Interactive expressions are Desmos LaTeX. Write y=2x or z=a(x^2+y^2), not y=2*x or **.")
-        if re.search(r"\b(if|else)\b", expression):
-            raise ValueError("if/else is for offline plots. Use plot_math_function, or write Desmos piecewise LaTeX here.")
 
 
 def main():

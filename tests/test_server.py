@@ -13,7 +13,6 @@ from mcp.client.stdio import stdio_client
 from PIL import Image
 
 from locus.config import Rendering, Settings, load_settings
-from locus.interactive import make_page
 from locus.server import create_server, run_worker
 
 
@@ -24,13 +23,13 @@ def server(tmp_path):
 
 async def test_guidance_prompts_and_validation(server):
     async with Client(server) as client:
-        assert len(await client.list_tools()) == 11
+        assert len(await client.list_tools()) == 10
         result = await client.call_tool("validate_formula", {"formula": "y=x^2"})
         assert result.data["valid"] is True
         invalid = await client.call_tool("validate_formula", {"formula": "2x"})
         assert invalid.data["valid"] is False and invalid.data["examples"]
         guide = await client.read_resource("resources://guide")
-        assert "Desmos" in guide[0].text
+        assert "Locus" in guide[0].text
         for name in ("basic_graphing_assistant", "advanced_math_analysis", "visualize_3d"):
             prompt = await client.get_prompt(name, {"formula": "sin(x)"})
             assert prompt.messages
@@ -62,29 +61,7 @@ async def test_invalid_calls_use_mcp_error(server):
         assert result.is_error
 
 
-async def test_interactive_resource_and_escape(server):
-    async with Client(server) as client:
-        result = await client.call_tool(
-            "create_interactive_graph",
-            {
-                "expressions": ["a=1", "y=ax^2"],
-                "title": "</script><script>alert(1)</script>",
-                "language": "zh-CN",
-            },
-        )
-        content = Path(result.data["path"]).read_text(encoding="utf-8")
-        assert "</script><script>alert" not in content
-        assert "\\u003c/script" in content
-        resource = await client.read_resource(result.data["resource_uri"])
-        assert resource[0].text == content
-        rejected = await client.call_tool(
-            "create_interactive_graph", {"expressions": ["y=2*x"]}, raise_on_error=False
-        )
-        assert rejected.is_error
-        assert "LaTeX" in rejected.content[0].text
-
-
-async def test_surface_png_and_official_3d_demo(server):
+async def test_surface_png(server):
     async with Client(server) as client:
         invalid = await client.call_tool("validate_formula", {"formula": "z = x^2 + y^2"})
         assert invalid.data["next_tool"] == "plot_3d_surface"
@@ -98,18 +75,7 @@ async def test_surface_png_and_official_3d_demo(server):
         metadata = json.loads(next(block.text for block in result.content if block.type == "text"))
         assert metadata["dimension"] == "3d"
         assert "x, y, z" in metadata["interaction"]
-        assert "v1.12" in metadata["interaction"]
         assert Path(metadata["path"]).read_bytes() == data
-        page = await client.call_tool(
-            "create_interactive_graph",
-            {"expressions": ["a=1", "z=a(x^2+y^2)"], "dimension": "3d", "language": "zh-CN"},
-        )
-        assert page.data["constructor"] == "Desmos.Calculator3D"
-        assert page.data["official_demo"] == "https://www.desmos.com/api/v1.12/docs/examples/3d.html"
-        html = Path(page.data["path"]).read_text(encoding="utf-8")
-        assert "Desmos.Calculator3D" in html
-        demos = await client.read_resource("resources://official-demos")
-        assert "404" in demos[0].text and "v1.12" in demos[0].text
 
 
 async def test_explore_returns_one_picture(server):
@@ -270,18 +236,6 @@ def test_config_relative_path_and_errors(tmp_path):
     path.write_text('{"rendering":{"default_width":1}}')
     with pytest.raises(ValueError):
         load_settings(str(path))
-
-
-def test_packaged_template():
-    page = make_page(["y=x"], "Example", [-10, 10], [-10, 10], "en")
-    assert "__GRAPH_DATA__" not in page
-    assert "__DEMO_2D__" not in page and "api/v1.11" not in page
-    assert "GraphingCalculator" in page
-    assert "https://www.desmos.com/api/v1.12/docs/examples/parabola.html" in page
-    assert "https://www.desmos.com/api/v1.12/docs/examples/3d.html" in page
-    surface = make_page(["z=x^2+y^2"], "Surface", [-2, 2], [-2, 2], "zh-CN", "3d")
-    assert '"dimension": "3d"' in surface
-    assert "Calculator3D" in surface
 
 
 async def test_real_stdio_entrypoint(tmp_path):

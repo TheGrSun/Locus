@@ -1,3 +1,3 @@
-"""Desmos MCP: offline mathematics and interactive Desmos graphs."""
+"""Locus: offline mathematics and plots."""
 
 __version__ = "0.3.0"

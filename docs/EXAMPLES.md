@@ -33,22 +33,6 @@ Expect real domain, real range, derivative `3*x**2 - 3`, and stationary points `
 Use `abs(x)` with `critical_points` to see why a corner can matter even when it is not a stationary point.
 Returned warnings explain incomplete differentiability or symbolic solving.
 
-## Interactive sliders and curves
-
-`create_interactive_graph`:
-
-```json
-{"expressions":["a=1","y=a x^2","x^2+y^2=9"],"title":"Explore a parabola and circle","language":"en","x_range":[-6,6],"y_range":[-4,8]}
-```
-
-Use `"language":"zh-CN"` for Chinese interface guidance.
-For trigonometry, Desmos LaTeX in JSON is `"y=\\sin(x)"`; JSON needs two backslashes to encode one.
-The offline syntax `sin(x)` and the interactive LaTeX syntax `\\sin(x)` should not be mixed automatically.
-
-Open `path` in a browser, supply your key, then move the `a` slider or edit expressions.
-“Save state JSON” downloads Desmos's opaque state; “Import state” reloads it. “Reset” restores the original graph.
-“Export PNG” saves the current view. The original HTML is unchanged by browser edits.
-
 ## Several curves and their analysis
 
 `explore_functions` returns one PNG and one analysis object per formula:
@@ -67,7 +51,7 @@ Open `path` in a browser, supply your key, then move the `a` slider or edit expr
 {"formulas":["z = x^2 + y^2","z = 0"],"x_range":[-2,2],"y_range":[-2,2],"z_range":[0,8]}
 ```
 
-A single `formula` argument still works. Pass `z_range` when the picture should use a fixed vertical scale. To orbit or zoom, open the live demo or `create_interactive_graph` with `dimension` `3d`.
+A single `formula` argument still works. Pass `z_range` when the picture should use a fixed vertical scale. To orbit or zoom, open the local page from the README.
 
 ## Points, parametric curves, vectors, and tangents
 
@@ -101,28 +85,6 @@ Piecewise formulas use Python conditions, including inside the tools above: `x^2
 ```
 
 The PNG is a sampled surface. It is not a symbolic 3D analysis. Keep explicit `*`.
-
-## Interactive 3D
-
-`create_interactive_graph` with `"dimension":"3d"`:
-
-```json
-{"expressions":["a=1","z=a(x^2+y^2)"],"title":"Paraboloid","language":"zh-CN","dimension":"3d"}
-```
-
-The page constructs `Desmos.Calculator3D` and links the official v1.12 demos. Drag to orbit. The official 3D demo starts blank; this page loads the expressions after the user connects with their own key.
-
-## Official demos
-
-Verified on 2026-11-02:
-
-| Page | Result |
-| --- | --- |
-| https://www.desmos.com/api/v1.12/docs/examples/parabola.html | HTTP 200. `GraphingCalculator` and `y=x^2`. |
-| https://www.desmos.com/api/v1.12/docs/examples/3d.html | HTTP 200. Blank `Calculator3D`. |
-| https://www.desmos.com/api/v1.11/docs/examples/3d.html | HTTP 404. Do not link it. |
-
-v1.12 is the current stable production API. v1.13 is not stable until Spring 2027.
 
 ## Guided prompts
 
