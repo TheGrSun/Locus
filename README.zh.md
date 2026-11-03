@@ -125,7 +125,7 @@ uv run python demo/server.py
 
 ## Agent harness
 
-对外的路由是服务器说明、`resources://guide`、`resources://official-demos`，以及 `basic_graphing_assistant`、`advanced_math_analysis`、`visualize_3d` 这三个 prompt。[AGENTS.md](AGENTS.md) 是这套规则的短契约。`.cursor` 这类编辑器状态不放进仓库。
+对外的路由是服务器说明、`resources://guide`、`resources://official-demos`，以及 `basic_graphing_assistant`、`advanced_math_analysis`、`visualize_3d` 这三个 prompt。
 
 ## 配置
 

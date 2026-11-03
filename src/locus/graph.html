@@ -12,6 +12,7 @@
     h2{margin:0 0 12px;font-size:20px}label{display:block;margin:20px 0 8px;font-weight:600}
     input[type=password]{width:100%;padding:12px;border:1px solid #9aafa4;border-radius:8px;font:inherit}
     button,.link{font:inherit;cursor:pointer;border:1px solid #b3c6ba;background:white;color:#234f40;padding:10px 16px;border-radius:8px}
+    button.primary{background:#225c45;color:#fff;border-color:#225c45}
     a.primary{display:inline-block;background:#225c45;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px}
     button:disabled{cursor:default;opacity:.5}
     button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ca9122;outline-offset:3px}a{color:#21694b}
@@ -26,7 +27,7 @@
 <body>
   <noscript>Please enable JavaScript to use this graph. 请启用 JavaScript 使用交互图表。</noscript>
   <header>
-    <span class="brand">DESMOS MCP / GRAPH LAB</span>
+    <span class="brand">LOCUS</span>
     <h1 id="title"></h1>
     <p id="mode" class="mode"></p>
     <p id="intro"></p>
@@ -40,10 +41,10 @@
   <main>
     <section id="setup" class="setup" aria-labelledby="setup-title">
       <h2 id="setup-title"></h2>
-      <p><a id="open-demo" class="primary" target="_blank" rel="noopener noreferrer"></a></p>
       <p id="setup-help"></p>
-      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off">
-        <button id="load" type="submit"></button></form>
+      <form id="connect"><label for="api-key" id="key-label"></label><input id="api-key" type="password" autocomplete="off" required>
+        <button id="load" class="primary" type="submit"></button></form>
+      <p><a id="open-demo" target="_blank" rel="noopener noreferrer"></a></p>
       <a id="get-key" href="https://www.desmos.com/my-api" target="_blank" rel="noopener noreferrer"></a>
       <p class="hint" id="privacy"></p><h2 id="expressions-title"></h2><pre id="expressions"></pre>
     </section>
@@ -64,8 +65,8 @@
     const messages = graph.language === "zh-CN" ? {
       intro:"三维结果是一张 x、y、z 坐标轴的标准视图。官方示例用的是 Desmos 自己的 API，不需要你的 key。",
       intro3d:"三维结果是一张 x、y、z 坐标轴的标准视图。上方官方 3D 示例可以直接打开，不需要你的 key。",
-      setup:"可选：用自己的 key 把公式载入本页", help:"没有 key 时，打开上方官方示例即可使用 Desmos API v1.12。本页的输入框只在你想把下面的公式载入自己的页面时才需要。",
-      getKey:"前往 Desmos 申请 API key ↗", key:"可选：自己的 API key", load:"载入本页", loading:"正在连接 Desmos…",
+      setup:"用你的 Desmos API key 连接", help:"到 Desmos 申请 key，填入后把下面的公式载入本页。Key 只留在本页内存里，用来加载官方 SDK，不会写入文件，也不会出现在导出的状态里。官方示例不需要 key，但不会载入这些公式。",
+      getKey:"前往 Desmos 申请 API key ↗", key:"Desmos API key", load:"连接并载入公式", loading:"正在连接 Desmos…",
       open2d:"打开官方 2D 示例（不需要 key）", open3d:"打开官方 3D 示例（不需要 key）",
       privacy:"Key 仅在本页内存中使用，并发送给 Desmos 加载 SDK；不会写入导出的状态文件。浏览器扩展仍可能读取本页内容。",
       expressions:"初始公式（Desmos LaTeX）", expressions3d:"初始公式（Desmos 3D LaTeX）",
@@ -79,8 +80,8 @@
     } : {
       intro:"A 3D result is one view of the x, y, and z axes. The official demo uses Desmos's own API and does not need your key.",
       intro3d:"A 3D result is one view of the x, y, and z axes. The official 3D demo above opens without your key.",
-      setup:"Optional: load these expressions with your own key", help:"Without a key, open the official demo above. It uses Desmos API v1.12. The field below is only for loading these expressions into this page.",
-      getKey:"Get a Desmos API key ↗", key:"Optional: your API key", load:"Load into this page", loading:"Connecting to Desmos…",
+      setup:"Connect with your Desmos API key", help:"Get a key from Desmos and enter it to load the expressions below. The key stays in page memory, loads the official SDK, and is not written into this file or exported state. The official demo needs no key and does not load these expressions.",
+      getKey:"Get a Desmos API key ↗", key:"Desmos API key", load:"Connect and load", loading:"Connecting to Desmos…",
       open2d:"Open the official 2D demo (no key)", open3d:"Open the official 3D demo (no key)",
       privacy:"The key stays in page memory and is sent to Desmos to load its SDK. It is not included in exported state files. Browser extensions may still read page contents.",
       expressions:"Initial expressions (Desmos LaTeX)", expressions3d:"Initial expressions (Desmos 3D LaTeX)",

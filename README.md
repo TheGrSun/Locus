@@ -129,7 +129,7 @@ The page links the verified official demos for stable API **v1.12**:
 
 ## Agent harness
 
-The published route is the server instructions, `resources://guide`, `resources://official-demos`, and the prompts `basic_graphing_assistant`, `advanced_math_analysis`, and `visualize_3d`. [AGENTS.md](AGENTS.md) is the short contract for those rules. Editor state, including `.cursor`, is not part of this repository.
+The published route is the server instructions, `resources://guide`, `resources://official-demos`, and the prompts `basic_graphing_assistant`, `advanced_math_analysis`, and `visualize_3d`.
 
 ## Configuration
 
